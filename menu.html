@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Digital Canteen Menu — CampusBite</title>
+  <meta name="description" content="Explore delicious meals, snacks, beverages and desserts available today at CampusBite college canteen.">
+
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <!-- Core Stylesheets -->
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/responsive.css">
+
+  <style>
+    .menu-filter-container {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-xl);
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .category-tabs-bar {
+      display: flex;
+      gap: 0.5rem;
+      overflow-x: auto;
+      padding-bottom: 0.5rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .cat-tab-btn {
+      padding: 0.6rem 1.25rem;
+      border-radius: var(--radius-full);
+      border: 1px solid var(--border-color);
+      background: var(--bg-tertiary);
+      color: var(--text-secondary);
+      font-weight: 700;
+      font-size: 0.9rem;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .cat-tab-btn:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+
+    .cat-tab-btn.active {
+      background: var(--primary);
+      color: #ffffff;
+      border-color: var(--primary);
+      box-shadow: 0 4px 12px rgba(245, 158, 11, 0.35);
+    }
+
+    .filter-controls-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .diet-filter-group {
+      display: flex;
+      gap: 0.4rem;
+    }
+
+    .diet-btn {
+      padding: 0.4rem 0.85rem;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border-color);
+      background: var(--bg-surface);
+      color: var(--text-secondary);
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .diet-btn.active {
+      background: var(--text-primary);
+      color: var(--bg-main);
+      border-color: var(--text-primary);
+    }
+
+    .food-card-qty-stepper {
+      display: flex;
+      align-items: center;
+      border: 1px solid var(--primary);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      background: var(--bg-surface);
+    }
+
+    .food-card-qty-stepper button {
+      background: var(--primary-light);
+      color: var(--primary);
+      border: none;
+      padding: 0.35rem 0.65rem;
+      cursor: pointer;
+      font-weight: 800;
+      transition: background 0.15s;
+    }
+
+    .food-card-qty-stepper button:hover {
+      background: var(--primary);
+      color: #ffffff;
+    }
+
+    .food-card-qty-stepper span {
+      padding: 0 0.65rem;
+      font-weight: 700;
+      font-size: 0.9rem;
+      color: var(--text-primary);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ========================================================================
+       Top Navigation Bar
+       ======================================================================== -->
+  <header class="site-header">
+    <div class="container">
+      <nav class="navbar">
+        <a href="../index.html" class="brand-logo">
+          <div class="logo-icon-wrapper"><i class="fa-solid fa-utensils"></i></div>
+          <div class="brand-name">
+            <span class="brand-title">CampusBite</span>
+            <span class="brand-tagline">College Canteen</span>
+          </div>
+        </a>
+
+        <ul class="nav-links">
+          <li><a href="../index.html" class="nav-link"><i class="fa-solid fa-house"></i> Home</a></li>
+          <li><a href="menu.html" class="nav-link active"><i class="fa-solid fa-burger"></i> Menu</a></li>
+          <li><a href="orders.html" class="nav-link"><i class="fa-solid fa-receipt"></i> Orders</a></li>
+          <li><a href="tracking.html" class="nav-link"><i class="fa-solid fa-satellite-dish"></i> Live Track</a></li>
+          <li><a href="about.html" class="nav-link"><i class="fa-solid fa-circle-info"></i> About</a></li>
+          <li><a href="contact.html" class="nav-link"><i class="fa-solid fa-envelope"></i> Contact</a></li>
+        </ul>
+
+        <div class="nav-actions">
+          <button class="nav-action-btn theme-toggle-btn" title="Toggle Dark/Light Mode" aria-label="Toggle Theme">
+            <i class="fa-solid fa-moon"></i>
+          </button>
+
+          <a href="cart.html" class="nav-action-btn" title="View Cart" aria-label="Shopping Cart">
+            <i class="fa-solid fa-cart-shopping"></i>
+            <span class="badge-counter cart-count-badge" style="display: none;">0</span>
+          </a>
+
+          <div class="nav-user-container"></div>
+
+          <button class="hamburger-btn" aria-label="Open Navigation Menu">
+            <i class="fa-solid fa-bars"></i>
+          </button>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Mobile Drawer -->
+  <div class="drawer-backdrop"></div>
+  <aside class="mobile-drawer" aria-label="Mobile Navigation">
+    <div class="drawer-header">
+      <div class="brand-logo">
+        <div class="logo-icon-wrapper"><i class="fa-solid fa-utensils"></i></div>
+        <span class="brand-title">CampusBite</span>
+      </div>
+      <button class="drawer-close-btn" aria-label="Close Menu">&times;</button>
+    </div>
+    <div class="drawer-body">
+      <ul class="drawer-links">
+        <li><a href="../index.html" class="drawer-link"><i class="fa-solid fa-house"></i> Home</a></li>
+        <li><a href="menu.html" class="drawer-link active"><i class="fa-solid fa-burger"></i> Digital Menu</a></li>
+        <li><a href="cart.html" class="drawer-link"><i class="fa-solid fa-cart-shopping"></i> My Cart</a></li>
+        <li><a href="orders.html" class="drawer-link"><i class="fa-solid fa-receipt"></i> Order History</a></li>
+        <li><a href="tracking.html" class="drawer-link"><i class="fa-solid fa-satellite-dish"></i> Live Tracking</a></li>
+        <li><a href="wallet.html" class="drawer-link"><i class="fa-solid fa-wallet"></i> Campus Wallet</a></li>
+        <li><a href="favorites.html" class="drawer-link"><i class="fa-solid fa-heart"></i> Favorites</a></li>
+        <li><a href="profile.html" class="drawer-link"><i class="fa-solid fa-user"></i> My Profile</a></li>
+        <li><a href="about.html" class="drawer-link"><i class="fa-solid fa-circle-info"></i> About Canteen</a></li>
+        <li><a href="contact.html" class="drawer-link"><i class="fa-solid fa-envelope"></i> Help & Contact</a></li>
+        <li><a href="../admin-login.html" class="drawer-link text-primary"><i class="fa-solid fa-user-shield"></i> Staff Portal</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <!-- ========================================================================
+       Page Header Banner
+       ======================================================================== -->
+  <section class="page-banner" style="padding: 2.25rem 0 1.5rem; background: var(--bg-surface); border-bottom: 1px solid var(--border-color);">
+    <div class="container">
+      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+        <div>
+          <span class="badge badge-primary" style="margin-bottom: 0.5rem;"><i class="fa-solid fa-utensils"></i> Fresh Daily Preparation</span>
+          <h1 style="font-size: 2.2rem; font-weight: 800; color: var(--text-primary); margin: 0.25rem 0;">Digital Canteen Menu</h1>
+          <p style="color: var(--text-secondary); margin: 0;">Explore hot meals, quick snacks, and fresh beverages crafted for campus energy.</p>
+        </div>
+        <div style="display: flex; gap: 0.75rem;">
+          <a href="favorites.html" class="btn btn-secondary btn-sm"><i class="fa-solid fa-heart text-danger"></i> My Favorites</a>
+          <a href="cart.html" class="btn btn-primary btn-sm"><i class="fa-solid fa-cart-shopping"></i> View Cart Tray</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================================
+       Menu Interactive Engine
+       ======================================================================== -->
+  <main class="container" style="padding-top: 2rem; padding-bottom: 5rem;">
+    <!-- Filter Toolbar -->
+    <div class="menu-filter-container">
+      <!-- Category Tabs -->
+      <div class="category-tabs-bar" id="category-tabs-container">
+        <button class="cat-tab-btn active" onclick="setCategory('All')"><i class="fa-solid fa-border-all"></i> All Items</button>
+        <button class="cat-tab-btn" onclick="setCategory('Breakfast')"><i class="fa-solid fa-egg"></i> Breakfast</button>
+        <button class="cat-tab-btn" onclick="setCategory('Snacks')"><i class="fa-solid fa-cookie-bite"></i> Snacks</button>
+        <button class="cat-tab-btn" onclick="setCategory('Meals')"><i class="fa-solid fa-bowl-rice"></i> Meals</button>
+        <button class="cat-tab-btn" onclick="setCategory('Fast Food')"><i class="fa-solid fa-burger"></i> Fast Food</button>
+        <button class="cat-tab-btn" onclick="setCategory('Beverages')"><i class="fa-solid fa-mug-hot"></i> Beverages</button>
+        <button class="cat-tab-btn" onclick="setCategory('Desserts')"><i class="fa-solid fa-ice-cream"></i> Desserts</button>
+      </div>
+
+      <!-- Controls Row: Search, Diet, Sort, Availability -->
+      <div class="filter-controls-row">
+        <!-- Search -->
+        <div class="input-icon-wrapper" style="max-width: 320px; width: 100%;">
+          <i class="fa-solid fa-magnifying-glass input-icon"></i>
+          <input type="text" id="menu-search-box" class="form-control" placeholder="Search food by name or taste..." oninput="applyFilters()">
+        </div>
+
+        <!-- Diet Filter Buttons -->
+        <div class="diet-filter-group">
+          <button class="diet-btn active" id="diet-all" onclick="setDiet('all')">All</button>
+          <button class="diet-btn" id="diet-veg" onclick="setDiet('veg')">🟢 Pure Veg</button>
+          <button class="diet-btn" id="diet-nonveg" onclick="setDiet('nonveg')">🔴 Non-Veg</button>
+        </div>
+
+        <!-- Sort dropdown -->
+        <div style="display: flex; gap: 0.75rem; align-items: center; flex-wrap: wrap;">
+          <select id="menu-sort-by" class="form-control" style="width: auto; padding: 0.45rem 1rem;" onchange="applyFilters()">
+            <option value="popular">Sort by: Popular</option>
+            <option value="price-asc">Price: Low to High</option>
+            <option value="price-desc">Price: High to Low</option>
+            <option value="rating">Rating: High to Low</option>
+          </select>
+
+          <!-- In Stock Only Checkbox -->
+          <label class="checkbox-label" style="font-size: 0.85rem; color: var(--text-secondary); cursor: pointer; user-select: none;">
+            <input type="checkbox" id="chk-available-only" onchange="applyFilters()">
+            <span>In Stock Only</span>
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <!-- Active Filter Summary & Result Count -->
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+      <span style="font-size: 0.92rem; color: var(--text-secondary);">
+        Showing <strong id="food-count-label" style="color: var(--text-primary);">0</strong> delicious items
+      </span>
+      <span id="active-category-pill" class="badge badge-primary">All Items</span>
+    </div>
+
+    <!-- Food Cards Grid -->
+    <div id="canteen-food-grid" class="food-grid">
+      <!-- Injected dynamically via JavaScript -->
+    </div>
+
+    <!-- Empty State Message -->
+    <div id="no-food-match" style="display: none; text-align: center; padding: 4rem 1rem;">
+      <div style="font-size: 3.5rem; color: var(--text-muted); margin-bottom: 1rem;"><i class="fa-solid fa-utensils"></i></div>
+      <h3 style="color: var(--text-primary);">No Food Items Found</h3>
+      <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">Try adjusting your search query or removing dietary filters.</p>
+      <button class="btn btn-secondary" onclick="resetFilters()">Reset All Filters</button>
+    </div>
+  </main>
+
+  <!-- ========================================================================
+       Mobile Bottom Navigation Bar
+       ======================================================================== -->
+  <nav class="mobile-bottom-bar" aria-label="Quick Mobile Navigation">
+    <a href="../index.html" class="bottom-bar-item">
+      <i class="fa-solid fa-house"></i>
+      <span>Home</span>
+    </a>
+    <a href="menu.html" class="bottom-bar-item active">
+      <i class="fa-solid fa-burger"></i>
+      <span>Menu</span>
+    </a>
+    <a href="cart.html" class="bottom-bar-item">
+      <i class="fa-solid fa-cart-shopping"></i>
+      <span>Cart</span>
+      <span class="bottom-badge cart-count-badge" style="display: none;">0</span>
+    </a>
+    <a href="orders.html" class="bottom-bar-item">
+      <i class="fa-solid fa-receipt"></i>
+      <span>Orders</span>
+    </a>
+    <a href="dashboard.html" class="bottom-bar-item">
+      <i class="fa-solid fa-user"></i>
+      <span>Account</span>
+    </a>
+  </nav>
+
+  <!-- Core Scripts -->
+  <script src="../js/data.js"></script>
+  <script src="../js/utils.js"></script>
+  <script src="../js/api.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/main.js"></script>
+
+  <script>
+    let allFoods = [];
+    let selectedCategory = "All";
+    let selectedDiet = "all";
+
+    document.addEventListener("DOMContentLoaded", async () => {
+      API.init();
+      const res = await API.getMenu();
+      if (res.success && res.data && res.data.length > 0) {
+        allFoods = res.data;
+      } else if (typeof INITIAL_DATA !== "undefined" && INITIAL_DATA.foods) {
+        allFoods = INITIAL_DATA.foods;
+      }
+      applyFilters();
+
+      // Listen for cart or favorite updates across page
+      window.addEventListener("campusbite_cart_updated", () => applyFilters());
+      window.addEventListener("campusbite_favorites_updated", () => applyFilters());
+    });
+
+    function setCategory(cat) {
+      selectedCategory = cat;
+      document.querySelectorAll(".cat-tab-btn").forEach(btn => {
+        btn.classList.toggle("active", btn.textContent.includes(cat) || (cat === "All" && btn.textContent.includes("All")));
+      });
+      document.getElementById("active-category-pill").textContent = cat === "All" ? "All Items" : cat;
+      applyFilters();
+    }
+
+    function setDiet(diet) {
+      selectedDiet = diet;
+      document.querySelectorAll(".diet-btn").forEach(btn => btn.classList.remove("active"));
+      document.getElementById(`diet-${diet}`).classList.add("active");
+      applyFilters();
+    }
+
+    function resetFilters() {
+      selectedCategory = "All";
+      selectedDiet = "all";
+      document.getElementById("menu-search-box").value = "";
+      document.getElementById("chk-available-only").checked = false;
+      document.getElementById("menu-sort-by").value = "popular";
+      setCategory("All");
+      setDiet("all");
+    }
+
+    function applyFilters() {
+      const q = (document.getElementById("menu-search-box").value || "").toLowerCase().trim();
+      const sortBy = document.getElementById("menu-sort-by").value;
+      const availableOnly = document.getElementById("chk-available-only").checked;
+
+      let filtered = allFoods.filter(food => {
+        // Category
+        if (selectedCategory !== "All" && food.category !== selectedCategory) return false;
+
+        // Diet
+        if (selectedDiet === "veg" && !food.isVeg) return false;
+        if (selectedDiet === "nonveg" && food.isVeg) return false;
+
+        // Available only
+        if (availableOnly && !food.isAvailable) return false;
+
+        // Search
+        if (q) {
+          const matchName = food.name.toLowerCase().includes(q);
+          const matchDesc = (food.description || "").toLowerCase().includes(q);
+          const matchCat = food.category.toLowerCase().includes(q);
+          const matchIng = (food.ingredients || []).some(i => i.toLowerCase().includes(q));
+          if (!matchName && !matchDesc && !matchCat && !matchIng) return false;
+        }
+
+        return true;
+      });
+
+      // Sorting
+      if (sortBy === "price-asc") {
+        filtered.sort((a, b) => a.price - b.price);
+      } else if (sortBy === "price-desc") {
+        filtered.sort((a, b) => b.price - a.price);
+      } else if (sortBy === "rating") {
+        filtered.sort((a, b) => b.rating - a.rating);
+      }
+
+      renderFoodCards(filtered);
+    }
+
+    function renderFoodCards(items) {
+      const grid = document.getElementById("canteen-food-grid");
+      const emptyMsg = document.getElementById("no-food-match");
+      const countLabel = document.getElementById("food-count-label");
+
+      countLabel.textContent = items.length;
+
+      if (items.length === 0) {
+        grid.innerHTML = "";
+        emptyMsg.style.display = "block";
+        return;
+      }
+
+      emptyMsg.style.display = "none";
+      const cart = API.getCart();
+      const favs = API.getFavorites();
+
+      grid.innerHTML = items.map(food => {
+        const isFav = favs.includes(food.id);
+        const cartItem = cart.find(c => c.id === food.id);
+        const qtyInCart = cartItem ? cartItem.quantity : 0;
+
+        return `
+          <div class="food-card ${!food.isAvailable ? 'food-card-unavailable' : ''}" onclick="App.openFoodDetails('${food.id}')">
+            <div class="food-card-img-wrapper">
+              <img src="${food.image}" alt="${food.name}" class="food-card-img" loading="lazy">
+              <div class="card-top-badges">
+                <span class="diet-tag ${food.isVeg ? 'diet-veg' : 'diet-nonveg'}">
+                  <i class="fa-solid fa-circle"></i> ${food.isVeg ? 'Veg' : 'Non-Veg'}
+                </span>
+                <button 
+                  class="btn-fav-card ${isFav ? 'active' : ''}" 
+                  onclick="event.stopPropagation(); handleToggleFav('${food.id}', this)" 
+                  title="Bookmark Dish"
+                >
+                  <i class="${isFav ? 'fa-solid' : 'fa-regular'} fa-heart"></i>
+                </button>
+              </div>
+              <span class="card-prep-time"><i class="fa-regular fa-clock"></i> ${food.prepTime || '8 mins'}</span>
+            </div>
+
+            <div class="food-card-body">
+              <div class="food-card-meta">
+                <span class="food-category-label">${food.category}</span>
+                <span class="food-card-rating"><i class="fa-solid fa-star"></i> ${food.rating}</span>
+              </div>
+
+              <h3 class="food-card-title">${food.name}</h3>
+              <p class="food-card-desc">${food.description}</p>
+
+              <div class="food-card-footer">
+                <div>
+                  <span class="food-price">₹${food.price}</span>
+                  ${!food.isAvailable ? '<span class="badge badge-danger" style="font-size: 0.68rem; margin-left: 0.35rem;">Sold Out</span>' : ''}
+                </div>
+
+                <div onclick="event.stopPropagation()">
+                  ${!food.isAvailable ? `
+                    <button class="btn btn-secondary btn-sm" disabled style="opacity: 0.6;">
+                      Unavailable
+                    </button>
+                  ` : qtyInCart > 0 ? `
+                    <div class="food-card-qty-stepper">
+                      <button type="button" onclick="updateItemQty('${food.id}', -1)"><i class="fa-solid fa-minus"></i></button>
+                      <span>${qtyInCart}</span>
+                      <button type="button" onclick="updateItemQty('${food.id}', 1)"><i class="fa-solid fa-plus"></i></button>
+                    </div>
+                  ` : `
+                    <button class="btn btn-primary btn-sm" onclick="addToTray('${food.id}')">
+                      <i class="fa-solid fa-cart-plus"></i> Add
+                    </button>
+                  `}
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join("");
+    }
+
+    function addToTray(foodId) {
+      const food = allFoods.find(f => f.id === foodId);
+      if (!food) return;
+
+      API.addToCart({
+        id: food.id,
+        name: food.name,
+        price: food.price,
+        image: food.image,
+        isVeg: food.isVeg
+      }, 1);
+
+      Utils.showToast(`Added ${food.name} to Cart Tray! 🛒`, "success", 1800);
+      applyFilters();
+      App.updateCartBadges();
+    }
+
+    function updateItemQty(foodId, delta) {
+      API.updateCartQuantity(foodId, delta);
+      applyFilters();
+      App.updateCartBadges();
+    }
+
+    function handleToggleFav(foodId, btnEl) {
+      const res = API.toggleFavorite(foodId);
+      btnEl.classList.toggle("active", res.isFavorite);
+      const icon = btnEl.querySelector("i");
+      if (icon) {
+        icon.className = res.isFavorite ? "fa-solid fa-heart" : "fa-regular fa-heart";
+      }
+      Utils.showToast(res.isFavorite ? "Saved to Favorites ❤️" : "Removed from Favorites", "info", 1500);
+    }
+  </script>
+</body>
+</html>

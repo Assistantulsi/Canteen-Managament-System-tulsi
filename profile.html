@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Profile & Settings — CampusBite</title>
+  <meta name="description" content="Manage your student canteen profile, preferences, dietary tags, password, and notification settings.">
+
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <!-- Core Stylesheets -->
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/responsive.css">
+
+  <style>
+    .profile-grid {
+      display: grid;
+      grid-template-columns: 320px 1fr;
+      gap: 2rem;
+      align-items: start;
+    }
+
+    .profile-badge-card {
+      background: var(--bg-surface);
+      border-radius: var(--radius-xl);
+      border: 1px solid var(--border-color);
+      padding: 2.25rem 1.5rem;
+      text-align: center;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .profile-avatar-large {
+      width: 110px;
+      height: 110px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 4px solid var(--primary);
+      margin: 0 auto 1.25rem;
+      box-shadow: var(--shadow-md);
+      display: block;
+    }
+
+    .settings-panel {
+      background: var(--bg-surface);
+      border-radius: var(--radius-xl);
+      border: 1px solid var(--border-color);
+      padding: 2rem;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .settings-section-title {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .toggle-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.85rem 0;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .toggle-switch {
+      position: relative;
+      width: 46px;
+      height: 24px;
+    }
+
+    .toggle-switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .toggle-slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: var(--border-color);
+      transition: .3s;
+      border-radius: 34px;
+    }
+
+    .toggle-slider:before {
+      position: absolute;
+      content: "";
+      height: 18px;
+      width: 18px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      transition: .3s;
+      border-radius: 50%;
+    }
+
+    input:checked + .toggle-slider {
+      background-color: var(--primary);
+    }
+
+    input:checked + .toggle-slider:before {
+      transform: translateX(22px);
+    }
+
+    @media (max-width: 900px) {
+      .profile-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="site-header">
+    <div class="container">
+      <nav class="navbar">
+        <a href="../index.html" class="brand-logo">
+          <div class="logo-icon-wrapper"><i class="fa-solid fa-utensils"></i></div>
+          <div class="brand-name">
+            <span class="brand-title">CampusBite</span>
+            <span class="brand-tagline">College Canteen</span>
+          </div>
+        </a>
+
+        <ul class="nav-links">
+          <li><a href="../index.html" class="nav-link"><i class="fa-solid fa-house"></i> Home</a></li>
+          <li><a href="menu.html" class="nav-link"><i class="fa-solid fa-burger"></i> Menu</a></li>
+          <li><a href="orders.html" class="nav-link"><i class="fa-solid fa-receipt"></i> Orders</a></li>
+          <li><a href="tracking.html" class="nav-link"><i class="fa-solid fa-satellite-dish"></i> Live Track</a></li>
+          <li><a href="about.html" class="nav-link"><i class="fa-solid fa-circle-info"></i> About</a></li>
+          <li><a href="contact.html" class="nav-link"><i class="fa-solid fa-envelope"></i> Contact</a></li>
+        </ul>
+
+        <div class="nav-actions">
+          <button class="nav-action-btn theme-toggle-btn" title="Toggle Dark/Light Mode" aria-label="Toggle Theme">
+            <i class="fa-solid fa-moon"></i>
+          </button>
+
+          <a href="cart.html" class="nav-action-btn" title="View Cart" aria-label="Shopping Cart">
+            <i class="fa-solid fa-cart-shopping"></i>
+            <span class="badge-counter cart-count-badge" style="display: none;">0</span>
+          </a>
+
+          <div class="nav-user-container"></div>
+
+          <button class="hamburger-btn" aria-label="Open Navigation Menu">
+            <i class="fa-solid fa-bars"></i>
+          </button>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Mobile Drawer -->
+  <div class="drawer-backdrop"></div>
+  <aside class="mobile-drawer" aria-label="Mobile Navigation">
+    <div class="drawer-header">
+      <div class="brand-logo">
+        <div class="logo-icon-wrapper"><i class="fa-solid fa-utensils"></i></div>
+        <span class="brand-title">CampusBite</span>
+      </div>
+      <button class="drawer-close-btn" aria-label="Close Menu">&times;</button>
+    </div>
+    <div class="drawer-body">
+      <ul class="drawer-links">
+        <li><a href="../index.html" class="drawer-link"><i class="fa-solid fa-house"></i> Home</a></li>
+        <li><a href="menu.html" class="drawer-link"><i class="fa-solid fa-burger"></i> Digital Menu</a></li>
+        <li><a href="cart.html" class="drawer-link"><i class="fa-solid fa-cart-shopping"></i> My Cart</a></li>
+        <li><a href="orders.html" class="drawer-link"><i class="fa-solid fa-receipt"></i> Order History</a></li>
+        <li><a href="tracking.html" class="drawer-link"><i class="fa-solid fa-satellite-dish"></i> Live Tracking</a></li>
+        <li><a href="wallet.html" class="drawer-link"><i class="fa-solid fa-wallet"></i> Campus Wallet</a></li>
+        <li><a href="favorites.html" class="drawer-link"><i class="fa-solid fa-heart"></i> Favorites</a></li>
+        <li><a href="profile.html" class="drawer-link active"><i class="fa-solid fa-user"></i> My Profile</a></li>
+        <li><a href="about.html" class="drawer-link"><i class="fa-solid fa-circle-info"></i> About Canteen</a></li>
+        <li><a href="contact.html" class="drawer-link"><i class="fa-solid fa-envelope"></i> Help & Contact</a></li>
+        <li><a href="../admin-login.html" class="drawer-link text-primary"><i class="fa-solid fa-user-shield"></i> Staff Portal</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <!-- Page Banner -->
+  <section class="page-banner" style="padding: 2.25rem 0 1.5rem; background: var(--bg-surface); border-bottom: 1px solid var(--border-color);">
+    <div class="container">
+      <span class="badge badge-primary" style="margin-bottom: 0.5rem;"><i class="fa-solid fa-id-card-clip"></i> Student Account</span>
+      <h1 style="font-size: 2.1rem; font-weight: 800; color: var(--text-primary); margin: 0.25rem 0;">Profile & Account Settings</h1>
+      <p style="color: var(--text-secondary); margin: 0;">Update your student credentials, notification alerts, and campus dining preferences.</p>
+    </div>
+  </section>
+
+  <!-- Main Profile Layout -->
+  <main class="container" style="padding-top: 2rem; padding-bottom: 5rem;">
+    <div class="profile-grid">
+      <!-- Left: Identity Badge Card -->
+      <div>
+        <div class="profile-badge-card">
+          <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=200&q=80" alt="Avatar" id="disp-avatar" class="profile-avatar-large">
+          <h2 style="font-size: 1.35rem; font-weight: 800; color: var(--text-primary); margin-bottom: 0.25rem;" id="disp-name">Aditya Verma</h2>
+          <span style="font-size: 0.88rem; color: var(--primary); font-weight: 700; display: block;" id="disp-id">STU1024</span>
+          <span style="font-size: 0.82rem; color: var(--text-muted); display: block; margin-top: 0.25rem;" id="disp-dept">Computer Science & Engineering</span>
+
+          <div style="margin: 1.5rem 0; padding: 1rem; background: var(--bg-tertiary); border-radius: var(--radius-lg); text-align: left;">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem; font-size: 0.85rem;">
+              <span style="color: var(--text-secondary);">Wallet Balance:</span>
+              <strong style="color: var(--accent-emerald);" id="disp-wallet">₹350.00</strong>
+            </div>
+            <div style="display: flex; justify-content: space-between; font-size: 0.85rem;">
+              <span style="color: var(--text-secondary);">Member Since:</span>
+              <span style="color: var(--text-primary);">Aug 2024</span>
+            </div>
+          </div>
+
+          <a href="wallet.html" class="btn btn-secondary btn-block btn-sm" style="margin-bottom: 0.5rem;">
+            <i class="fa-solid fa-wallet"></i> Top Up Campus Wallet
+          </a>
+          <button class="btn btn-outline-danger btn-block btn-sm" onclick="Auth.logoutStudent()">
+            <i class="fa-solid fa-right-from-bracket"></i> Logout of Account
+          </button>
+        </div>
+      </div>
+
+      <!-- Right: Editable Details & Preferences -->
+      <div class="settings-panel">
+        <!-- Personal Details Form -->
+        <form id="profile-edit-form">
+          <div class="settings-section-title">
+            <i class="fa-solid fa-user-pen text-primary"></i> Personal Academic Information
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+            <div class="form-group">
+              <label class="form-label">Full Name</label>
+              <input type="text" id="prof-name" class="form-control" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Student ID / Roll No</label>
+              <input type="text" id="prof-id" class="form-control" readonly style="opacity: 0.75; background: var(--bg-tertiary);">
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+            <div class="form-group">
+              <label class="form-label">College Email</label>
+              <input type="email" id="prof-email" class="form-control" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Contact Phone Number</label>
+              <input type="tel" id="prof-phone" class="form-control" required>
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem;">
+            <div class="form-group">
+              <label class="form-label">Department</label>
+              <select id="prof-dept" class="form-control">
+                <option value="Computer Science & Engineering">Computer Science & Engineering</option>
+                <option value="Information Technology">Information Technology</option>
+                <option value="Electronics & Communication">Electronics & Communication</option>
+                <option value="Mechanical Engineering">Mechanical Engineering</option>
+                <option value="Civil Engineering">Civil Engineering</option>
+                <option value="Management Studies">Management Studies</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Year / Semester</label>
+              <select id="prof-year" class="form-control">
+                <option value="1st Year (Sem 1-2)">1st Year (Sem 1-2)</option>
+                <option value="2nd Year (Sem 3-4)">2nd Year (Sem 3-4)</option>
+                <option value="3rd Year (Sem 5-6)">3rd Year (Sem 5-6)</option>
+                <option value="4th Year (Sem 7-8)">4th Year (Sem 7-8)</option>
+              </select>
+            </div>
+          </div>
+
+          <div style="text-align: right; margin-bottom: 2rem;">
+            <button type="submit" class="btn btn-primary" id="btn-save-profile">
+              <i class="fa-solid fa-floppy-disk"></i> Save Profile Updates
+            </button>
+          </div>
+        </form>
+
+        <!-- Notification & Security Preferences -->
+        <div class="settings-section-title">
+          <i class="fa-solid fa-sliders text-primary"></i> App & Dining Preferences
+        </div>
+
+        <div class="toggle-row">
+          <div>
+            <strong style="color: var(--text-primary); font-size: 0.95rem; display: block;">Live Kitchen Order Sound Alerts</strong>
+            <span style="color: var(--text-muted); font-size: 0.8rem;">Chime when food reaches "Ready for Pickup" status.</span>
+          </div>
+          <label class="toggle-switch">
+            <input type="checkbox" id="pref-sound" checked>
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+
+        <div class="toggle-row">
+          <div>
+            <strong style="color: var(--text-primary); font-size: 0.95rem; display: block;">Daily Special Deals & Combo Offers</strong>
+            <span style="color: var(--text-muted); font-size: 0.8rem;">Receive notifications when promo coupons are active.</span>
+          </div>
+          <label class="toggle-switch">
+            <input type="checkbox" id="pref-offers" checked>
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+
+        <div class="toggle-row">
+          <div>
+            <strong style="color: var(--text-primary); font-size: 0.95rem; display: block;">Dietary Preference Default</strong>
+            <span style="color: var(--text-muted); font-size: 0.8rem;">Highlight Vegetarian items by default on menu.</span>
+          </div>
+          <label class="toggle-switch">
+            <input type="checkbox" id="pref-veg">
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+
+        <!-- Security / Password change modal trigger -->
+        <div style="margin-top: 1.5rem; display: flex; justify-content: space-between; align-items: center; padding-top: 1.25rem; border-top: 1px solid var(--border-color);">
+          <div>
+            <strong style="color: var(--text-primary); font-size: 0.95rem; display: block;">Account Password</strong>
+            <span style="color: var(--text-muted); font-size: 0.8rem;">Last changed 3 months ago.</span>
+          </div>
+          <button type="button" class="btn btn-secondary btn-sm" onclick="openPasswordModal()">
+            <i class="fa-solid fa-key"></i> Change Password
+          </button>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Password Change Modal -->
+  <div class="modal-backdrop" id="pwd-modal" style="display: none;">
+    <div class="modal-dialog" style="max-width: 420px;">
+      <div class="modal-header">
+        <h3 class="modal-title"><i class="fa-solid fa-key text-primary"></i> Change Password</h3>
+        <button class="modal-close" onclick="closePasswordModal()">&times;</button>
+      </div>
+      <div class="modal-body" style="padding: 1.5rem;">
+        <div class="form-group" style="margin-bottom: 1rem;">
+          <label class="form-label">Current Password</label>
+          <input type="password" id="old-pwd" class="form-control" placeholder="••••••••" required>
+        </div>
+        <div class="form-group" style="margin-bottom: 1rem;">
+          <label class="form-label">New Password</label>
+          <input type="password" id="new-pwd" class="form-control" placeholder="At least 6 characters" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Confirm New Password</label>
+          <input type="password" id="confirm-new-pwd" class="form-control" placeholder="Re-enter new password" required>
+        </div>
+      </div>
+      <div class="modal-footer" style="display: flex; gap: 0.75rem;">
+        <button class="btn btn-secondary btn-block btn-sm" onclick="closePasswordModal()">Cancel</button>
+        <button class="btn btn-primary btn-block btn-sm" onclick="saveNewPassword()"><i class="fa-solid fa-check"></i> Update Password</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mobile Bottom Navigation Bar -->
+  <nav class="mobile-bottom-bar" aria-label="Quick Mobile Navigation">
+    <a href="../index.html" class="bottom-bar-item">
+      <i class="fa-solid fa-house"></i>
+      <span>Home</span>
+    </a>
+    <a href="menu.html" class="bottom-bar-item">
+      <i class="fa-solid fa-burger"></i>
+      <span>Menu</span>
+    </a>
+    <a href="cart.html" class="bottom-bar-item">
+      <i class="fa-solid fa-cart-shopping"></i>
+      <span>Cart</span>
+      <span class="bottom-badge cart-count-badge" style="display: none;">0</span>
+    </a>
+    <a href="orders.html" class="bottom-bar-item">
+      <i class="fa-solid fa-receipt"></i>
+      <span>Orders</span>
+    </a>
+    <a href="dashboard.html" class="bottom-bar-item">
+      <i class="fa-solid fa-user"></i>
+      <span>Account</span>
+    </a>
+  </nav>
+
+  <!-- Scripts -->
+  <script src="../js/data.js"></script>
+  <script src="../js/utils.js"></script>
+  <script src="../js/api.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/main.js"></script>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      API.init();
+      if (!Auth.requireStudentAuth("../login.html")) return;
+      loadProfileData();
+
+      document.getElementById("profile-edit-form").addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const updates = {
+          name: document.getElementById("prof-name").value.trim(),
+          email: document.getElementById("prof-email").value.trim(),
+          phone: document.getElementById("prof-phone").value.trim(),
+          department: document.getElementById("prof-dept").value,
+          year: document.getElementById("prof-year").value
+        };
+
+        const res = await API.updateProfile(updates);
+        if (res.success) {
+          Utils.showToast("Profile details updated successfully! ✓", "success", 2500);
+          loadProfileData();
+          App.renderUserNavState();
+        } else {
+          Utils.showToast(res.message, "error");
+        }
+      });
+    });
+
+    function loadProfileData() {
+      const user = API.getCurrentUser() || { name: "Aditya Verma", id: "STU1024", email: "student@college.edu", phone: "9876543210", department: "Computer Science & Engineering", year: "3rd Year (Sem 5-6)", walletBalance: 350 };
+
+      // Badge Card
+      if (user.avatar) document.getElementById("disp-avatar").src = user.avatar;
+      document.getElementById("disp-name").textContent = user.name || "Student";
+      document.getElementById("disp-id").textContent = user.id || "STU1024";
+      document.getElementById("disp-dept").textContent = user.department || "Engineering";
+      document.getElementById("disp-wallet").textContent = `₹${Number(user.walletBalance || 0).toFixed(2)}`;
+
+      // Edit Form
+      document.getElementById("prof-name").value = user.name || "";
+      document.getElementById("prof-id").value = user.id || "";
+      document.getElementById("prof-email").value = user.email || "";
+      document.getElementById("prof-phone").value = user.phone || "";
+      if (user.department) document.getElementById("prof-dept").value = user.department;
+      if (user.year) document.getElementById("prof-year").value = user.year;
+    }
+
+    function openPasswordModal() {
+      document.getElementById("pwd-modal").style.display = "flex";
+    }
+
+    function closePasswordModal() {
+      document.getElementById("pwd-modal").style.display = "none";
+    }
+
+    async function saveNewPassword() {
+      const oldPwd = document.getElementById("old-pwd").value;
+      const newPwd = document.getElementById("new-pwd").value;
+      const confirmPwd = document.getElementById("confirm-new-pwd").value;
+
+      if (!oldPwd || !newPwd) {
+        Utils.showToast("Please enter both current and new password", "warning");
+        return;
+      }
+
+      if (newPwd.length < 6) {
+        Utils.showToast("New password must be at least 6 characters", "warning");
+        return;
+      }
+
+      if (newPwd !== confirmPwd) {
+        Utils.showToast("Passwords do not match", "error");
+        return;
+      }
+
+      const res = await API.updateProfile({ password: newPwd });
+      closePasswordModal();
+      if (res.success) {
+        Utils.showToast("Password changed successfully!", "success", 2500);
+      }
+    }
+  </script>
+</body>
+</html>

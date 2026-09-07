@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Your Food Tray / Cart — CampusBite</title>
+  <meta name="description" content="Review your selected canteen meals, apply coupon codes, and proceed to swift checkout.">
+
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <!-- Core Stylesheets -->
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/responsive.css">
+
+  <style>
+    .cart-layout-grid {
+      display: grid;
+      grid-template-columns: 1.5fr 1fr;
+      gap: 2rem;
+      align-items: start;
+    }
+
+    .cart-items-panel {
+      background: var(--bg-surface);
+      border-radius: var(--radius-xl);
+      border: 1px solid var(--border-color);
+      padding: 1.5rem;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .cart-item-row {
+      display: flex;
+      align-items: center;
+      gap: 1.25rem;
+      padding: 1rem 0;
+      border-bottom: 1px solid var(--border-color);
+      transition: background 0.15s;
+    }
+
+    .cart-item-row:last-child {
+      border-bottom: none;
+    }
+
+    .cart-item-thumb {
+      width: 72px;
+      height: 72px;
+      border-radius: var(--radius-lg);
+      object-fit: cover;
+      flex-shrink: 0;
+    }
+
+    .cart-item-details {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .cart-stepper {
+      display: inline-flex;
+      align-items: center;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      background: var(--bg-tertiary);
+    }
+
+    .cart-stepper button {
+      background: none;
+      border: none;
+      padding: 0.35rem 0.65rem;
+      font-size: 0.85rem;
+      cursor: pointer;
+      color: var(--text-primary);
+      transition: background 0.15s;
+    }
+
+    .cart-stepper button:hover {
+      background: var(--primary);
+      color: #ffffff;
+    }
+
+    .cart-stepper span {
+      padding: 0 0.65rem;
+      font-weight: 700;
+      font-size: 0.95rem;
+      color: var(--text-primary);
+    }
+
+    @media (max-width: 900px) {
+      .cart-layout-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="site-header">
+    <div class="container">
+      <nav class="navbar">
+        <a href="../index.html" class="brand-logo">
+          <div class="logo-icon-wrapper"><i class="fa-solid fa-utensils"></i></div>
+          <div class="brand-name">
+            <span class="brand-title">CampusBite</span>
+            <span class="brand-tagline">College Canteen</span>
+          </div>
+        </a>
+
+        <ul class="nav-links">
+          <li><a href="../index.html" class="nav-link"><i class="fa-solid fa-house"></i> Home</a></li>
+          <li><a href="menu.html" class="nav-link"><i class="fa-solid fa-burger"></i> Menu</a></li>
+          <li><a href="orders.html" class="nav-link"><i class="fa-solid fa-receipt"></i> Orders</a></li>
+          <li><a href="tracking.html" class="nav-link"><i class="fa-solid fa-satellite-dish"></i> Live Track</a></li>
+          <li><a href="about.html" class="nav-link"><i class="fa-solid fa-circle-info"></i> About</a></li>
+          <li><a href="contact.html" class="nav-link"><i class="fa-solid fa-envelope"></i> Contact</a></li>
+        </ul>
+
+        <div class="nav-actions">
+          <button class="nav-action-btn theme-toggle-btn" title="Toggle Dark/Light Mode" aria-label="Toggle Theme">
+            <i class="fa-solid fa-moon"></i>
+          </button>
+
+          <a href="cart.html" class="nav-action-btn active" title="View Cart" aria-label="Shopping Cart">
+            <i class="fa-solid fa-cart-shopping"></i>
+            <span class="badge-counter cart-count-badge" style="display: none;">0</span>
+          </a>
+
+          <div class="nav-user-container"></div>
+
+          <button class="hamburger-btn" aria-label="Open Navigation Menu">
+            <i class="fa-solid fa-bars"></i>
+          </button>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Mobile Drawer -->
+  <div class="drawer-backdrop"></div>
+  <aside class="mobile-drawer" aria-label="Mobile Navigation">
+    <div class="drawer-header">
+      <div class="brand-logo">
+        <div class="logo-icon-wrapper"><i class="fa-solid fa-utensils"></i></div>
+        <span class="brand-title">CampusBite</span>
+      </div>
+      <button class="drawer-close-btn" aria-label="Close Menu">&times;</button>
+    </div>
+    <div class="drawer-body">
+      <ul class="drawer-links">
+        <li><a href="../index.html" class="drawer-link"><i class="fa-solid fa-house"></i> Home</a></li>
+        <li><a href="menu.html" class="drawer-link"><i class="fa-solid fa-burger"></i> Digital Menu</a></li>
+        <li><a href="cart.html" class="drawer-link active"><i class="fa-solid fa-cart-shopping"></i> My Cart</a></li>
+        <li><a href="orders.html" class="drawer-link"><i class="fa-solid fa-receipt"></i> Order History</a></li>
+        <li><a href="tracking.html" class="drawer-link"><i class="fa-solid fa-satellite-dish"></i> Live Tracking</a></li>
+        <li><a href="wallet.html" class="drawer-link"><i class="fa-solid fa-wallet"></i> Campus Wallet</a></li>
+        <li><a href="favorites.html" class="drawer-link"><i class="fa-solid fa-heart"></i> Favorites</a></li>
+        <li><a href="profile.html" class="drawer-link"><i class="fa-solid fa-user"></i> My Profile</a></li>
+        <li><a href="about.html" class="drawer-link"><i class="fa-solid fa-circle-info"></i> About Canteen</a></li>
+        <li><a href="contact.html" class="drawer-link"><i class="fa-solid fa-envelope"></i> Help & Contact</a></li>
+        <li><a href="../admin-login.html" class="drawer-link text-primary"><i class="fa-solid fa-user-shield"></i> Staff Portal</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <!-- Page Banner -->
+  <section class="page-banner" style="padding: 2.25rem 0 1.5rem; background: var(--bg-surface); border-bottom: 1px solid var(--border-color);">
+    <div class="container">
+      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+        <div>
+          <span class="badge badge-primary" style="margin-bottom: 0.5rem;"><i class="fa-solid fa-tray"></i> Student Order Tray</span>
+          <h1 style="font-size: 2.2rem; font-weight: 800; color: var(--text-primary); margin: 0.25rem 0;">Shopping Cart</h1>
+          <p style="color: var(--text-secondary); margin: 0;">Review your selected dishes and apply promotional student coupons.</p>
+        </div>
+        <a href="menu.html" class="btn btn-secondary btn-sm"><i class="fa-solid fa-plus"></i> Add More Items</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Cart Content Area -->
+  <main class="container" style="padding-top: 2rem; padding-bottom: 5rem;">
+    <!-- Empty Cart Screen -->
+    <div id="cart-empty-view" style="display: none; text-align: center; padding: 4rem 1rem;">
+      <div style="font-size: 4rem; color: var(--text-muted); margin-bottom: 1rem;"><i class="fa-solid fa-cart-shopping"></i></div>
+      <h2 style="color: var(--text-primary); margin-bottom: 0.5rem;">Your Food Tray is Empty</h2>
+      <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">Looks like you haven't added any hot canteen meals or beverages yet.</p>
+      <a href="menu.html" class="btn btn-primary btn-lg"><i class="fa-solid fa-burger"></i> Browse Today's Menu</a>
+    </div>
+
+    <!-- Active Cart Layout Grid -->
+    <div id="cart-active-layout" class="cart-layout-grid">
+      <!-- Left: Item rows -->
+      <div class="cart-items-panel">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; padding-bottom: 0.75rem; border-bottom: 1px solid var(--border-color);">
+          <h2 style="font-size: 1.25rem; font-weight: 700; color: var(--text-primary); margin: 0;">
+            Selected Dishes (<span id="cart-item-count">0</span>)
+          </h2>
+          <button class="btn btn-outline-danger btn-sm" onclick="clearFullCart()">Clear All</button>
+        </div>
+
+        <div id="cart-items-container">
+          <!-- Injected via JavaScript -->
+        </div>
+      </div>
+
+      <!-- Right: Summary Card -->
+      <div>
+        <div class="cart-summary-card">
+          <h2 class="summary-title"><i class="fa-solid fa-receipt text-primary"></i> Order Summary</h2>
+
+          <!-- Promo Coupon Input -->
+          <div class="summary-coupon" style="margin-bottom: 1.25rem;">
+            <div class="coupon-input-group">
+              <i class="fa-solid fa-tag coupon-icon"></i>
+              <input type="text" id="cart-coupon-input" class="coupon-input" placeholder="Coupon Code (e.g. CANTEEN20)" value="CANTEEN20">
+              <button type="button" class="btn btn-secondary btn-sm" onclick="applyCartCoupon()">Apply</button>
+            </div>
+            <span id="cart-coupon-msg" style="display: block; font-size: 0.8rem; margin-top: 0.35rem;"></span>
+          </div>
+
+          <!-- Price Breakdown -->
+          <div class="summary-breakdown">
+            <div class="summary-row">
+              <span>Items Subtotal</span>
+              <span id="sum-subtotal">₹0</span>
+            </div>
+            <div class="summary-row" id="row-coupon-discount" style="display: none; color: var(--accent-emerald);">
+              <span>Student Coupon (<span id="coupon-code-lbl"></span>)</span>
+              <span id="sum-discount">-₹0</span>
+            </div>
+            <div class="summary-row">
+              <span>Eco Packaging & Tray Fee</span>
+              <span>₹5</span>
+            </div>
+            <div class="summary-row">
+              <span>Campus Service GST</span>
+              <span class="text-emerald">₹0 (Student Waived)</span>
+            </div>
+            <div class="summary-divider"></div>
+            <div class="summary-row summary-grand-total">
+              <span>Grand Total</span>
+              <span id="sum-grand-total">₹0</span>
+            </div>
+          </div>
+
+          <!-- Action Buttons -->
+          <div class="summary-actions" style="margin-top: 1.5rem;">
+            <a href="checkout.html" class="btn btn-primary btn-lg btn-block" style="display: flex; justify-content: center; align-items: center; gap: 0.5rem;">
+              <span>Proceed to Checkout</span>
+              <i class="fa-solid fa-arrow-right"></i>
+            </a>
+            <a href="menu.html" class="btn btn-secondary btn-block" style="margin-top: 0.75rem;">
+              <i class="fa-solid fa-plus"></i> Add More Food
+            </a>
+          </div>
+
+          <!-- Trust Badges -->
+          <div class="summary-perks" style="margin-top: 1.5rem;">
+            <div class="perk-item">
+              <i class="fa-solid fa-bolt text-primary"></i>
+              <span>Average pickup in 8-12 minutes</span>
+            </div>
+            <div class="perk-item">
+              <i class="fa-solid fa-shield-halved text-emerald"></i>
+              <span>100% Hygienic FSSAI Standard Campus Kitchen</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Mobile Bottom Navigation Bar -->
+  <nav class="mobile-bottom-bar" aria-label="Quick Mobile Navigation">
+    <a href="../index.html" class="bottom-bar-item">
+      <i class="fa-solid fa-house"></i>
+      <span>Home</span>
+    </a>
+    <a href="menu.html" class="bottom-bar-item">
+      <i class="fa-solid fa-burger"></i>
+      <span>Menu</span>
+    </a>
+    <a href="cart.html" class="bottom-bar-item active">
+      <i class="fa-solid fa-cart-shopping"></i>
+      <span>Cart</span>
+      <span class="bottom-badge cart-count-badge" style="display: none;">0</span>
+    </a>
+    <a href="orders.html" class="bottom-bar-item">
+      <i class="fa-solid fa-receipt"></i>
+      <span>Orders</span>
+    </a>
+    <a href="dashboard.html" class="bottom-bar-item">
+      <i class="fa-solid fa-user"></i>
+      <span>Account</span>
+    </a>
+  </nav>
+
+  <!-- Core Scripts -->
+  <script src="../js/data.js"></script>
+  <script src="../js/utils.js"></script>
+  <script src="../js/api.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/main.js"></script>
+
+  <script>
+    let activeDiscount = 0;
+    let activeCoupon = null;
+    const packagingFee = 5;
+
+    document.addEventListener("DOMContentLoaded", () => {
+      API.init();
+      renderCartView();
+      applyCartCoupon();
+    });
+
+    function renderCartView() {
+      const cart = API.getCart();
+      const emptyView = document.getElementById("cart-empty-view");
+      const activeLayout = document.getElementById("cart-active-layout");
+      const itemsContainer = document.getElementById("cart-items-container");
+
+      if (!cart || cart.length === 0) {
+        emptyView.style.display = "block";
+        activeLayout.style.display = "none";
+        return;
+      }
+
+      emptyView.style.display = "none";
+      activeLayout.style.display = "grid";
+
+      const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+      document.getElementById("cart-item-count").textContent = totalItems;
+
+      itemsContainer.innerHTML = cart.map(item => `
+        <div class="cart-item-row">
+          <img src="${item.image}" alt="${item.name}" class="cart-item-thumb">
+          <div class="cart-item-details">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+              <div>
+                <strong style="color: var(--text-primary); font-size: 1.05rem; display: block;">${item.name}</strong>
+                <span class="diet-tag ${item.isVeg ? 'diet-veg' : 'diet-nonveg'}" style="font-size: 0.65rem; padding: 0.15rem 0.45rem;">
+                  <i class="fa-solid fa-circle"></i> ${item.isVeg ? 'Veg' : 'Non-Veg'}
+                </span>
+              </div>
+              <strong style="color: var(--text-primary); font-size: 1.15rem;">₹${item.price * item.quantity}</strong>
+            </div>
+
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 0.75rem;">
+              <div class="cart-stepper">
+                <button type="button" onclick="changeQty('${item.id}', -1)"><i class="fa-solid fa-minus"></i></button>
+                <span>${item.quantity}</span>
+                <button type="button" onclick="changeQty('${item.id}', 1)"><i class="fa-solid fa-plus"></i></button>
+              </div>
+
+              <button class="btn btn-outline-danger btn-sm" onclick="removeItem('${item.id}')" title="Remove Item" style="padding: 0.25rem 0.6rem;">
+                <i class="fa-solid fa-trash-can"></i> Remove
+              </button>
+            </div>
+          </div>
+        </div>
+      `).join("");
+
+      updateTotals();
+    }
+
+    function changeQty(id, delta) {
+      API.updateCartQuantity(id, delta);
+      renderCartView();
+      applyCartCoupon();
+      App.updateCartBadges();
+    }
+
+    function removeItem(id) {
+      API.removeFromCart(id);
+      renderCartView();
+      applyCartCoupon();
+      App.updateCartBadges();
+      Utils.showToast("Item removed from tray", "info", 1500);
+    }
+
+    function clearFullCart() {
+      if (!confirm("Clear all items from your food tray?")) return;
+      API.clearCart();
+      renderCartView();
+      App.updateCartBadges();
+    }
+
+    async function applyCartCoupon() {
+      const code = (document.getElementById("cart-coupon-input").value || "").trim().toUpperCase();
+      const msg = document.getElementById("cart-coupon-msg");
+      const cart = API.getCart();
+      const subtotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+
+      if (!code) {
+        activeDiscount = 0;
+        activeCoupon = null;
+        msg.textContent = "";
+        updateTotals();
+        return;
+      }
+
+      const res = await API.validateCoupon(code, subtotal);
+      if (res.valid) {
+        activeCoupon = res.coupon;
+        activeDiscount = res.discount;
+        msg.textContent = `✓ ${res.message}`;
+        msg.style.color = "var(--accent-emerald)";
+      } else {
+        activeDiscount = 0;
+        activeCoupon = null;
+        msg.textContent = res.message;
+        msg.style.color = "var(--accent-ruby)";
+      }
+
+      updateTotals();
+    }
+
+    function updateTotals() {
+      const cart = API.getCart();
+      const subtotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+
+      const discountRow = document.getElementById("row-coupon-discount");
+      if (activeDiscount > 0) {
+        discountRow.style.display = "flex";
+        document.getElementById("coupon-code-lbl").textContent = activeCoupon ? activeCoupon.code : "";
+        document.getElementById("sum-discount").textContent = `-₹${activeDiscount}`;
+      } else {
+        discountRow.style.display = "none";
+      }
+
+      const grandTotal = Math.max(0, subtotal - activeDiscount + packagingFee);
+
+      document.getElementById("sum-subtotal").textContent = `₹${subtotal}`;
+      document.getElementById("sum-grand-total").textContent = `₹${grandTotal}`;
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Campus Wallet & Passbook — CampusBite</title>
+  <meta name="description" content="Check your prepaid canteen meal balance, recharge via UPI, and review your food transaction passbook.">
+
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <!-- Core Stylesheets -->
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/responsive.css">
+
+  <style>
+    .wallet-grid {
+      display: grid;
+      grid-template-columns: 1.1fr 1.3fr;
+      gap: 2rem;
+      align-items: start;
+    }
+
+    /* Virtual Student Campus Card */
+    .virtual-card {
+      background: linear-gradient(135deg, #1e293b 0%, #0f172a 60%, #1e1b4b 100%);
+      border-radius: var(--radius-xl);
+      padding: 2rem;
+      color: #ffffff;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 20px 35px -10px rgba(0, 0, 0, 0.5);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      margin-bottom: 1.5rem;
+    }
+
+    .virtual-card::after {
+      content: '';
+      position: absolute;
+      bottom: -60px;
+      right: -60px;
+      width: 220px;
+      height: 220px;
+      background: radial-gradient(circle, rgba(245, 158, 11, 0.25) 0%, transparent 70%);
+      border-radius: 50%;
+    }
+
+    .chip-icon {
+      width: 44px;
+      height: 32px;
+      background: linear-gradient(135deg, #f59e0b, #d97706);
+      border-radius: 6px;
+      position: relative;
+      margin-bottom: 1.5rem;
+    }
+
+    .chip-icon::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: rgba(0, 0, 0, 0.3);
+    }
+
+    .card-number-display {
+      font-family: monospace;
+      font-size: 1.35rem;
+      letter-spacing: 0.15em;
+      margin-bottom: 1.5rem;
+      color: #f8fafc;
+    }
+
+    .card-balance-box {
+      background: var(--bg-surface);
+      border-radius: var(--radius-xl);
+      border: 1px solid var(--border-color);
+      padding: 1.75rem;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .preset-chip {
+      padding: 0.5rem 1rem;
+      border-radius: var(--radius-full);
+      border: 1px solid var(--border-color);
+      background: var(--bg-surface);
+      color: var(--text-primary);
+      font-weight: 700;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .preset-chip:hover {
+      background: var(--primary);
+      color: #ffffff;
+      border-color: var(--primary);
+    }
+
+    @media (max-width: 900px) {
+      .wallet-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="site-header">
+    <div class="container">
+      <nav class="navbar">
+        <a href="../index.html" class="brand-logo">
+          <div class="logo-icon-wrapper"><i class="fa-solid fa-utensils"></i></div>
+          <div class="brand-name">
+            <span class="brand-title">CampusBite</span>
+            <span class="brand-tagline">College Canteen</span>
+          </div>
+        </a>
+
+        <ul class="nav-links">
+          <li><a href="../index.html" class="nav-link"><i class="fa-solid fa-house"></i> Home</a></li>
+          <li><a href="menu.html" class="nav-link"><i class="fa-solid fa-burger"></i> Menu</a></li>
+          <li><a href="orders.html" class="nav-link"><i class="fa-solid fa-receipt"></i> Orders</a></li>
+          <li><a href="tracking.html" class="nav-link"><i class="fa-solid fa-satellite-dish"></i> Live Track</a></li>
+          <li><a href="about.html" class="nav-link"><i class="fa-solid fa-circle-info"></i> About</a></li>
+          <li><a href="contact.html" class="nav-link"><i class="fa-solid fa-envelope"></i> Contact</a></li>
+        </ul>
+
+        <div class="nav-actions">
+          <button class="nav-action-btn theme-toggle-btn" title="Toggle Dark/Light Mode" aria-label="Toggle Theme">
+            <i class="fa-solid fa-moon"></i>
+          </button>
+
+          <a href="cart.html" class="nav-action-btn" title="View Cart" aria-label="Shopping Cart">
+            <i class="fa-solid fa-cart-shopping"></i>
+            <span class="badge-counter cart-count-badge" style="display: none;">0</span>
+          </a>
+
+          <div class="nav-user-container"></div>
+
+          <button class="hamburger-btn" aria-label="Open Navigation Menu">
+            <i class="fa-solid fa-bars"></i>
+          </button>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Mobile Drawer -->
+  <div class="drawer-backdrop"></div>
+  <aside class="mobile-drawer" aria-label="Mobile Navigation">
+    <div class="drawer-header">
+      <div class="brand-logo">
+        <div class="logo-icon-wrapper"><i class="fa-solid fa-utensils"></i></div>
+        <span class="brand-title">CampusBite</span>
+      </div>
+      <button class="drawer-close-btn" aria-label="Close Menu">&times;</button>
+    </div>
+    <div class="drawer-body">
+      <ul class="drawer-links">
+        <li><a href="../index.html" class="drawer-link"><i class="fa-solid fa-house"></i> Home</a></li>
+        <li><a href="menu.html" class="drawer-link"><i class="fa-solid fa-burger"></i> Digital Menu</a></li>
+        <li><a href="cart.html" class="drawer-link"><i class="fa-solid fa-cart-shopping"></i> My Cart</a></li>
+        <li><a href="orders.html" class="drawer-link"><i class="fa-solid fa-receipt"></i> Order History</a></li>
+        <li><a href="tracking.html" class="drawer-link"><i class="fa-solid fa-satellite-dish"></i> Live Tracking</a></li>
+        <li><a href="wallet.html" class="drawer-link active"><i class="fa-solid fa-wallet"></i> Campus Wallet</a></li>
+        <li><a href="favorites.html" class="drawer-link"><i class="fa-solid fa-heart"></i> Favorites</a></li>
+        <li><a href="profile.html" class="drawer-link"><i class="fa-solid fa-user"></i> My Profile</a></li>
+        <li><a href="about.html" class="drawer-link"><i class="fa-solid fa-circle-info"></i> About Canteen</a></li>
+        <li><a href="contact.html" class="drawer-link"><i class="fa-solid fa-envelope"></i> Help & Contact</a></li>
+        <li><a href="../admin-login.html" class="drawer-link text-primary"><i class="fa-solid fa-user-shield"></i> Staff Portal</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <!-- Page Banner -->
+  <section class="page-banner" style="padding: 2.25rem 0 1.5rem; background: var(--bg-surface); border-bottom: 1px solid var(--border-color);">
+    <div class="container">
+      <span class="badge badge-primary" style="margin-bottom: 0.5rem;"><i class="fa-solid fa-wallet"></i> Cashless Campus Life</span>
+      <h1 style="font-size: 2.1rem; font-weight: 800; color: var(--text-primary); margin: 0.25rem 0;">Student Campus Wallet</h1>
+      <p style="color: var(--text-secondary); margin: 0;">Instant 1-click meal payments with zero bank transaction failures or OTP queues.</p>
+    </div>
+  </section>
+
+  <!-- Main Wallet Section -->
+  <main class="container" style="padding-top: 2rem; padding-bottom: 5rem;">
+    <div class="wallet-grid">
+      <!-- Left: Virtual Card & Balance Controller -->
+      <div>
+        <!-- Virtual Campus Card -->
+        <div class="virtual-card">
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1.5rem;">
+            <div>
+              <span style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.08em; color: #94a3b8; display: block;">Campus Prepaid Pass</span>
+              <strong style="font-size: 1.15rem; color: #ffffff;">CampusBite Canteen</strong>
+            </div>
+            <i class="fa-solid fa-wifi" style="transform: rotate(90deg); font-size: 1.4rem; color: #94a3b8;"></i>
+          </div>
+
+          <div class="chip-icon"></div>
+
+          <div class="card-number-display" id="card-display-num">•••• •••• •••• 1024</div>
+
+          <div style="display: flex; justify-content: space-between; align-items: flex-end;">
+            <div>
+              <span style="font-size: 0.72rem; color: #94a3b8; text-transform: uppercase; display: block;">CARDHOLDER</span>
+              <strong style="font-size: 0.95rem; color: #ffffff;" id="card-holder-name">ADITYA VERMA</strong>
+            </div>
+            <div>
+              <span style="font-size: 0.72rem; color: #94a3b8; text-transform: uppercase; display: block;">VALID THRU</span>
+              <strong style="font-size: 0.95rem; color: #ffffff;">08/28</strong>
+            </div>
+            <div>
+              <span style="font-size: 0.72rem; color: #94a3b8; text-transform: uppercase; display: block;">STUDENT ID</span>
+              <strong style="font-size: 0.95rem; color: var(--primary);" id="card-student-id">STU1024</strong>
+            </div>
+          </div>
+        </div>
+
+        <!-- Balance Summary & Top Up Trigger -->
+        <div class="card-balance-box">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+            <span style="color: var(--text-secondary); font-weight: 600; font-size: 0.95rem;">Current Available Balance</span>
+            <span class="badge badge-success"><i class="fa-solid fa-shield-check"></i> Active</span>
+          </div>
+
+          <div style="font-size: 2.6rem; font-weight: 900; color: var(--text-primary); margin-bottom: 1.5rem; line-height: 1;" id="wallet-balance-num">
+            ₹350.00
+          </div>
+
+          <!-- Quick Top-up Presets -->
+          <div style="margin-bottom: 1.25rem;">
+            <span style="font-size: 0.8rem; color: var(--text-muted); display: block; margin-bottom: 0.5rem; font-weight: 600;">QUICK TOP-UP AMOUNTS</span>
+            <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+              <button class="preset-chip" onclick="openAddMoneyModal(100)">+ ₹100</button>
+              <button class="preset-chip" onclick="openAddMoneyModal(200)">+ ₹200</button>
+              <button class="preset-chip" onclick="openAddMoneyModal(500)">+ ₹500</button>
+              <button class="preset-chip" onclick="openAddMoneyModal(1000)">+ ₹1000</button>
+            </div>
+          </div>
+
+          <button class="btn btn-primary btn-block btn-lg" onclick="openAddMoneyModal()">
+            <i class="fa-solid fa-circle-plus"></i> Recharge Wallet via UPI
+          </button>
+        </div>
+      </div>
+
+      <!-- Right: Passbook & Transactions -->
+      <div>
+        <div class="card" style="padding: 1.75rem;">
+          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem; margin-bottom: 1.25rem;">
+            <h2 style="font-size: 1.25rem; font-weight: 700; margin: 0; color: var(--text-primary);">
+              <i class="fa-solid fa-receipt text-primary"></i> Wallet Passbook
+            </h2>
+            <div style="display: flex; gap: 0.35rem;">
+              <button class="btn btn-secondary btn-sm" onclick="filterTxns('all')">All</button>
+              <button class="btn btn-secondary btn-sm" onclick="filterTxns('credit')">Credits (+)</button>
+              <button class="btn btn-secondary btn-sm" onclick="filterTxns('debit')">Debits (-)</button>
+            </div>
+          </div>
+
+          <!-- Transaction List -->
+          <div id="txns-list" style="display: flex; flex-direction: column; gap: 0.75rem;">
+            <!-- Injected via JavaScript -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Add Money Modal -->
+  <div class="modal-backdrop" id="add-money-modal" style="display: none;">
+    <div class="modal-dialog" style="max-width: 440px;">
+      <div class="modal-header">
+        <h3 class="modal-title"><i class="fa-solid fa-circle-plus text-primary"></i> Recharge Campus Wallet</h3>
+        <button class="modal-close" onclick="closeAddMoneyModal()">&times;</button>
+      </div>
+      <div class="modal-body" style="padding: 1.5rem;">
+        <div class="form-group" style="margin-bottom: 1.25rem;">
+          <label class="form-label">Enter Recharge Amount (₹)</label>
+          <div class="input-icon-wrapper">
+            <span style="position: absolute; left: 14px; top: 50%; transform: translateY(-50%); font-weight: 700; color: var(--text-primary);">₹</span>
+            <input type="number" id="topup-amount-input" class="form-control" style="padding-left: 2.25rem; font-size: 1.25rem; font-weight: 700;" placeholder="200" min="10" max="5000" value="200">
+          </div>
+          <span style="font-size: 0.78rem; color: var(--text-muted); margin-top: 0.35rem; display: block;">Instant credit via simulated UPI Gateway</span>
+        </div>
+
+        <div style="display: flex; gap: 0.5rem; margin-bottom: 1.5rem;">
+          <button type="button" class="preset-chip" onclick="document.getElementById('topup-amount-input').value = 100">₹100</button>
+          <button type="button" class="preset-chip" onclick="document.getElementById('topup-amount-input').value = 200">₹200</button>
+          <button type="button" class="preset-chip" onclick="document.getElementById('topup-amount-input').value = 500">₹500</button>
+          <button type="button" class="preset-chip" onclick="document.getElementById('topup-amount-input').value = 1000">₹1000</button>
+        </div>
+
+        <div style="background: var(--bg-tertiary); padding: 1rem; border-radius: var(--radius-md); font-size: 0.85rem; color: var(--text-secondary); line-height: 1.5;">
+          <i class="fa-solid fa-circle-info text-primary"></i> <strong>Canteen Perk:</strong> Wallet orders are prioritized for zero-wait kitchen preparation during peak campus intervals.
+        </div>
+      </div>
+      <div class="modal-footer" style="display: flex; gap: 0.75rem;">
+        <button class="btn btn-secondary btn-block btn-sm" onclick="closeAddMoneyModal()">Cancel</button>
+        <button class="btn btn-primary btn-block btn-sm" onclick="confirmWalletTopup()"><i class="fa-solid fa-bolt"></i> Add Money Now</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mobile Bottom Navigation Bar -->
+  <nav class="mobile-bottom-bar" aria-label="Quick Mobile Navigation">
+    <a href="../index.html" class="bottom-bar-item">
+      <i class="fa-solid fa-house"></i>
+      <span>Home</span>
+    </a>
+    <a href="menu.html" class="bottom-bar-item">
+      <i class="fa-solid fa-burger"></i>
+      <span>Menu</span>
+    </a>
+    <a href="cart.html" class="bottom-bar-item">
+      <i class="fa-solid fa-cart-shopping"></i>
+      <span>Cart</span>
+      <span class="bottom-badge cart-count-badge" style="display: none;">0</span>
+    </a>
+    <a href="orders.html" class="bottom-bar-item">
+      <i class="fa-solid fa-receipt"></i>
+      <span>Orders</span>
+    </a>
+    <a href="dashboard.html" class="bottom-bar-item">
+      <i class="fa-solid fa-user"></i>
+      <span>Account</span>
+    </a>
+  </nav>
+
+  <!-- Scripts -->
+  <script src="../js/data.js"></script>
+  <script src="../js/utils.js"></script>
+  <script src="../js/api.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/main.js"></script>
+
+  <script>
+    let activeTxnFilter = "all";
+
+    document.addEventListener("DOMContentLoaded", () => {
+      API.init();
+      if (!Auth.requireStudentAuth("../login.html")) return;
+      renderWalletData();
+    });
+
+    function renderWalletData() {
+      const user = API.getCurrentUser() || { name: "Aditya Verma", id: "STU1024", walletBalance: 350 };
+      document.getElementById("wallet-balance-num").textContent = `₹${Number(user.walletBalance || 0).toFixed(2)}`;
+      document.getElementById("card-holder-name").textContent = (user.name || "STUDENT").toUpperCase();
+      document.getElementById("card-student-id").textContent = user.id || "STU1024";
+      document.getElementById("card-display-num").textContent = `•••• •••• •••• ${(user.id || '1024').slice(-4)}`;
+
+      renderTransactions();
+    }
+
+    function renderTransactions() {
+      const txns = API.getWalletTransactions();
+      const list = document.getElementById("txns-list");
+
+      const filtered = txns.filter(t => {
+        if (activeTxnFilter === "all") return true;
+        return t.type === activeTxnFilter;
+      });
+
+      if (filtered.length === 0) {
+        list.innerHTML = `
+          <div style="text-align: center; padding: 2rem; color: var(--text-muted);">
+            <i class="fa-solid fa-receipt" style="font-size: 2rem; margin-bottom: 0.5rem; display: block;"></i>
+            No transactions found in this view.
+          </div>
+        `;
+        return;
+      }
+
+      list.innerHTML = filtered.map(t => {
+        const isCredit = t.type === "credit";
+        const iconClass = isCredit ? "fa-arrow-down-left text-emerald" : "fa-arrow-up-right text-ruby";
+        const sign = isCredit ? "+" : "-";
+
+        return `
+          <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.85rem 1rem; border-radius: var(--radius-md); background: var(--bg-tertiary);">
+            <div style="display: flex; align-items: center; gap: 0.85rem;">
+              <div style="width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: ${isCredit ? 'rgba(16, 185, 129, 0.15)' : 'rgba(239, 68, 68, 0.15)'};">
+                <i class="fa-solid ${iconClass}"></i>
+              </div>
+              <div>
+                <strong style="color: var(--text-primary); font-size: 0.92rem; display: block;">${t.title}</strong>
+                <span style="color: var(--text-muted); font-size: 0.78rem;">${t.date} • ${t.status || 'Successful'}</span>
+              </div>
+            </div>
+            <strong style="color: ${isCredit ? 'var(--accent-emerald)' : 'var(--accent-ruby)'}; font-size: 1.05rem;">
+              ${sign}₹${Number(t.amount).toFixed(2)}
+            </strong>
+          </div>
+        `;
+      }).join("");
+    }
+
+    function filterTxns(type) {
+      activeTxnFilter = type;
+      renderTransactions();
+    }
+
+    function openAddMoneyModal(amount = 200) {
+      document.getElementById("topup-amount-input").value = amount;
+      document.getElementById("add-money-modal").style.display = "flex";
+    }
+
+    function closeAddMoneyModal() {
+      document.getElementById("add-money-modal").style.display = "none";
+    }
+
+    async function confirmWalletTopup() {
+      const val = parseFloat(document.getElementById("topup-amount-input").value);
+      if (!val || val <= 0) {
+        Utils.showToast("Please enter a valid amount", "error");
+        return;
+      }
+
+      const res = await API.addWalletBalance(val);
+      closeAddMoneyModal();
+
+      if (res.success) {
+        Utils.showToast(`₹${val.toFixed(2)} added to your Campus Wallet! 💳`, "success", 2500);
+        renderWalletData();
+        App.renderUserNavState();
+      }
+    }
+  </script>
+</body>
+</html>

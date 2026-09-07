@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Live Order Tracking — CampusBite Canteen</title>
+  <meta name="description" content="Follow your campus meal preparation live from kitchen receipt to ready for pickup counter.">
+
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <!-- Core Stylesheets -->
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/responsive.css">
+
+  <style>
+    .tracker-layout-grid {
+      display: grid;
+      grid-template-columns: 1.4fr 1fr;
+      gap: 2rem;
+      align-items: start;
+    }
+
+    .tracker-card {
+      background: var(--bg-surface);
+      border-radius: var(--radius-xl);
+      border: 1px solid var(--border-color);
+      padding: 2rem;
+      box-shadow: var(--shadow-md);
+    }
+
+    .tracker-header-badge {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+      padding-bottom: 1.5rem;
+      border-bottom: 1px solid var(--border-color);
+      margin-bottom: 2rem;
+    }
+
+    /* 5-Step Animated Timeline */
+    .timeline-container {
+      position: relative;
+      padding: 1rem 0;
+    }
+
+    .timeline-step {
+      display: flex;
+      align-items: flex-start;
+      gap: 1.25rem;
+      position: relative;
+      padding-bottom: 2rem;
+    }
+
+    .timeline-step:last-child {
+      padding-bottom: 0;
+    }
+
+    .timeline-step::before {
+      content: '';
+      position: absolute;
+      left: 20px;
+      top: 40px;
+      bottom: 0;
+      width: 2px;
+      background: var(--border-color);
+      transition: background 0.3s ease;
+    }
+
+    .timeline-step:last-child::before {
+      display: none;
+    }
+
+    .timeline-step.completed::before {
+      background: var(--accent-emerald);
+    }
+
+    .step-icon-node {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+      background: var(--bg-tertiary);
+      color: var(--text-muted);
+      border: 2px solid var(--border-color);
+      z-index: 2;
+      flex-shrink: 0;
+      transition: all 0.3s ease;
+    }
+
+    .timeline-step.completed .step-icon-node {
+      background: var(--accent-emerald);
+      color: #ffffff;
+      border-color: var(--accent-emerald);
+      box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.2);
+    }
+
+    .timeline-step.active .step-icon-node {
+      background: var(--primary);
+      color: #ffffff;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 6px rgba(245, 158, 11, 0.25);
+      animation: pulse-node 1.8s infinite;
+    }
+
+    @keyframes pulse-node {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.08); }
+      100% { transform: scale(1); }
+    }
+
+    .step-content {
+      flex: 1;
+    }
+
+    .step-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin: 0 0 0.25rem;
+    }
+
+    .step-desc {
+      color: var(--text-secondary);
+      font-size: 0.88rem;
+      margin: 0;
+      line-height: 1.4;
+    }
+
+    .step-time {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      margin-top: 0.25rem;
+      display: block;
+    }
+
+    /* Preparation Countdown Box */
+    .countdown-timer-box {
+      background: linear-gradient(135deg, rgba(245, 158, 11, 0.12), rgba(239, 68, 68, 0.08));
+      border: 1px solid rgba(245, 158, 11, 0.3);
+      border-radius: var(--radius-lg);
+      padding: 1.25rem;
+      text-align: center;
+      margin-bottom: 1.75rem;
+    }
+
+    .countdown-digits {
+      font-size: 2.5rem;
+      font-weight: 900;
+      font-family: monospace;
+      color: var(--primary);
+      line-height: 1;
+      margin: 0.5rem 0;
+    }
+
+    .simulation-control-box {
+      background: var(--bg-tertiary);
+      border-radius: var(--radius-lg);
+      padding: 1rem;
+      margin-top: 1.5rem;
+      border: 1px dashed var(--border-color);
+    }
+
+    @media (max-width: 900px) {
+      .tracker-layout-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="site-header">
+    <div class="container">
+      <nav class="navbar">
+        <a href="../index.html" class="brand-logo">
+          <div class="logo-icon-wrapper"><i class="fa-solid fa-utensils"></i></div>
+          <div class="brand-name">
+            <span class="brand-title">CampusBite</span>
+            <span class="brand-tagline">College Canteen</span>
+          </div>
+        </a>
+
+        <ul class="nav-links">
+          <li><a href="../index.html" class="nav-link"><i class="fa-solid fa-house"></i> Home</a></li>
+          <li><a href="menu.html" class="nav-link"><i class="fa-solid fa-burger"></i> Menu</a></li>
+          <li><a href="orders.html" class="nav-link"><i class="fa-solid fa-receipt"></i> Orders</a></li>
+          <li><a href="tracking.html" class="nav-link active"><i class="fa-solid fa-satellite-dish"></i> Live Track</a></li>
+          <li><a href="about.html" class="nav-link"><i class="fa-solid fa-circle-info"></i> About</a></li>
+          <li><a href="contact.html" class="nav-link"><i class="fa-solid fa-envelope"></i> Contact</a></li>
+        </ul>
+
+        <div class="nav-actions">
+          <button class="nav-action-btn theme-toggle-btn" title="Toggle Dark/Light Mode" aria-label="Toggle Theme">
+            <i class="fa-solid fa-moon"></i>
+          </button>
+
+          <a href="cart.html" class="nav-action-btn" title="View Cart" aria-label="Shopping Cart">
+            <i class="fa-solid fa-cart-shopping"></i>
+            <span class="badge-counter cart-count-badge" style="display: none;">0</span>
+          </a>
+
+          <div class="nav-user-container"></div>
+
+          <button class="hamburger-btn" aria-label="Open Navigation Menu">
+            <i class="fa-solid fa-bars"></i>
+          </button>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Mobile Drawer -->
+  <div class="drawer-backdrop"></div>
+  <aside class="mobile-drawer" aria-label="Mobile Navigation">
+    <div class="drawer-header">
+      <div class="brand-logo">
+        <div class="logo-icon-wrapper"><i class="fa-solid fa-utensils"></i></div>
+        <span class="brand-title">CampusBite</span>
+      </div>
+      <button class="drawer-close-btn" aria-label="Close Menu">&times;</button>
+    </div>
+    <div class="drawer-body">
+      <ul class="drawer-links">
+        <li><a href="../index.html" class="drawer-link"><i class="fa-solid fa-house"></i> Home</a></li>
+        <li><a href="menu.html" class="drawer-link"><i class="fa-solid fa-burger"></i> Digital Menu</a></li>
+        <li><a href="cart.html" class="drawer-link"><i class="fa-solid fa-cart-shopping"></i> My Cart</a></li>
+        <li><a href="orders.html" class="drawer-link"><i class="fa-solid fa-receipt"></i> Order History</a></li>
+        <li><a href="tracking.html" class="drawer-link active"><i class="fa-solid fa-satellite-dish"></i> Live Tracking</a></li>
+        <li><a href="wallet.html" class="drawer-link"><i class="fa-solid fa-wallet"></i> Campus Wallet</a></li>
+        <li><a href="favorites.html" class="drawer-link"><i class="fa-solid fa-heart"></i> Favorites</a></li>
+        <li><a href="profile.html" class="drawer-link"><i class="fa-solid fa-user"></i> My Profile</a></li>
+        <li><a href="about.html" class="drawer-link"><i class="fa-solid fa-circle-info"></i> About Canteen</a></li>
+        <li><a href="contact.html" class="drawer-link"><i class="fa-solid fa-envelope"></i> Help & Contact</a></li>
+        <li><a href="../admin-login.html" class="drawer-link text-primary"><i class="fa-solid fa-user-shield"></i> Staff Portal</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <!-- Page Banner -->
+  <section class="page-banner" style="padding: 2.25rem 0 1.5rem; background: var(--bg-surface); border-bottom: 1px solid var(--border-color);">
+    <div class="container">
+      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+        <div>
+          <span class="badge badge-primary" style="margin-bottom: 0.5rem;"><i class="fa-solid fa-satellite-dish"></i> Live Kitchen Telemetry</span>
+          <h1 style="font-size: 2.1rem; font-weight: 800; color: var(--text-primary); margin: 0.25rem 0;">Order Progress Tracking</h1>
+          <p style="color: var(--text-secondary); margin: 0;">Real-time cooking status, preparation countdown timer, and pickup counter alert.</p>
+        </div>
+
+        <!-- Search another Order ID -->
+        <div style="display: flex; gap: 0.5rem;">
+          <input type="text" id="lookup-order-id" class="form-control" placeholder="Search Order ID..." style="width: 180px; padding: 0.4rem 0.75rem; font-size: 0.85rem; font-family: monospace;">
+          <button class="btn btn-secondary btn-sm" onclick="lookupOrder()"><i class="fa-solid fa-magnifying-glass"></i> Track</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Tracker Engine -->
+  <main class="container" style="padding-top: 2rem; padding-bottom: 5rem;">
+    <!-- If order not found -->
+    <div id="no-order-alert" style="display: none; text-align: center; padding: 4rem 1rem;">
+      <div style="font-size: 3.5rem; color: var(--text-muted); margin-bottom: 1rem;"><i class="fa-solid fa-satellite-dish"></i></div>
+      <h3 style="color: var(--text-primary);">No Active Order Found</h3>
+      <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">Place an order from the menu or enter an existing Order ID above.</p>
+      <a href="menu.html" class="btn btn-primary"><i class="fa-solid fa-burger"></i> Order Delicious Food</a>
+    </div>
+
+    <!-- Active Tracker Grid Layout -->
+    <div id="tracker-content-layout" class="tracker-layout-grid">
+      <!-- Left: 5-Stage Animated Status Timeline -->
+      <div class="tracker-card">
+        <div class="tracker-header-badge">
+          <div>
+            <span style="font-size: 0.8rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase;">YOUR PICKUP TOKEN</span>
+            <div style="font-size: 2.5rem; font-weight: 900; color: var(--primary); line-height: 1;" id="track-token-display">#B-42</div>
+            <span style="font-size: 0.85rem; color: var(--text-secondary); font-family: monospace;" id="track-order-id-label">CAN20260906001</span>
+          </div>
+
+          <div style="text-align: right;">
+            <span class="badge badge-warning" id="track-status-pill" style="font-size: 0.9rem; padding: 0.4rem 0.85rem;">
+              ● Preparing in Kitchen
+            </span>
+            <span style="font-size: 0.78rem; color: var(--text-muted); display: block; margin-top: 0.35rem;" id="track-placed-time">Placed: 12:45 PM</span>
+          </div>
+        </div>
+
+        <!-- Countdown Timer -->
+        <div class="countdown-timer-box" id="countdown-box">
+          <span style="font-size: 0.82rem; font-weight: 700; text-transform: uppercase; color: var(--primary); letter-spacing: 0.05em;">
+            Estimated Kitchen Preparation Remaining
+          </span>
+          <div class="countdown-digits" id="countdown-display">07:42</div>
+          <span style="font-size: 0.82rem; color: var(--text-muted);">Please proceed to the counter once status turns <strong>"Ready for Pickup"</strong></span>
+        </div>
+
+        <!-- 5-Step Timeline -->
+        <div class="timeline-container">
+          <!-- Step 1 -->
+          <div class="timeline-step completed" id="step-1">
+            <div class="step-icon-node"><i class="fa-solid fa-check"></i></div>
+            <div class="step-content">
+              <h4 class="step-title">Order Placed</h4>
+              <p class="step-desc">Order successfully logged into campus canteen digital kitchen system.</p>
+              <span class="step-time" id="time-step-1">12:45 PM</span>
+            </div>
+          </div>
+
+          <!-- Step 2 -->
+          <div class="timeline-step completed" id="step-2">
+            <div class="step-icon-node"><i class="fa-solid fa-check"></i></div>
+            <div class="step-content">
+              <h4 class="step-title">Payment Confirmed</h4>
+              <p class="step-desc" id="step-payment-desc">Settled via Campus Wallet. Zero payment fee.</p>
+              <span class="step-time" id="time-step-2">12:46 PM</span>
+            </div>
+          </div>
+
+          <!-- Step 3 -->
+          <div class="timeline-step active" id="step-3">
+            <div class="step-icon-node"><i class="fa-solid fa-fire-burner"></i></div>
+            <div class="step-content">
+              <h4 class="step-title">Kitchen Preparing</h4>
+              <p class="step-desc">Chef is actively preparing your fresh hot meal and packaging items.</p>
+              <span class="step-time" id="time-step-3">In Progress...</span>
+            </div>
+          </div>
+
+          <!-- Step 4 -->
+          <div class="timeline-step" id="step-4">
+            <div class="step-icon-node"><i class="fa-solid fa-bell-concierge"></i></div>
+            <div class="step-content">
+              <h4 class="step-title">Ready for Pickup</h4>
+              <p class="step-desc" id="step-counter-desc">Hot meal plated at collection tray. Show your token on arrival.</p>
+              <span class="step-time" id="time-step-4">Pending</span>
+            </div>
+          </div>
+
+          <!-- Step 5 -->
+          <div class="timeline-step" id="step-5">
+            <div class="step-icon-node"><i class="fa-solid fa-circle-check"></i></div>
+            <div class="step-content">
+              <h4 class="step-title">Completed</h4>
+              <p class="step-desc">Food collected by student. Enjoy your delicious campus meal!</p>
+              <span class="step-time" id="time-step-5">Pending</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Demonstration Action Box -->
+        <div class="simulation-control-box">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+            <strong style="font-size: 0.85rem; color: var(--text-primary);"><i class="fa-solid fa-wand-magic-sparkles text-primary"></i> Status Demo Simulator</strong>
+            <span style="font-size: 0.75rem; color: var(--text-muted);">Fast-forward kitchen pipeline</span>
+          </div>
+          <div style="display: flex; gap: 0.5rem;">
+            <button class="btn btn-primary btn-sm btn-block" onclick="advanceOrderStatus()">
+              <i class="fa-solid fa-forward-step"></i> Next Kitchen Stage
+            </button>
+            <button class="btn btn-secondary btn-sm" onclick="resetOrderDemo()" title="Reset Status">
+              <i class="fa-solid fa-rotate-left"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: Order Ticket & Collection Counter Details -->
+      <div>
+        <div class="card" style="padding: 1.75rem; margin-bottom: 1.5rem;">
+          <h3 style="font-size: 1.15rem; font-weight: 700; color: var(--text-primary); margin-bottom: 1rem;">
+            <i class="fa-solid fa-map-pin text-primary"></i> Pickup Location
+          </h3>
+
+          <div style="background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-lg); margin-bottom: 1.25rem;">
+            <span style="font-size: 0.78rem; text-transform: uppercase; color: var(--text-muted); font-weight: 700; display: block;">DESIGNATED COUNTER</span>
+            <strong style="font-size: 1.35rem; color: var(--text-primary); display: block; margin: 0.25rem 0;" id="pickup-counter-name">Counter 1 (Snacks & Beverages)</strong>
+            <span style="font-size: 0.82rem; color: var(--text-secondary);">Student Activity Center, Ground Floor</span>
+          </div>
+
+          <div style="display: flex; justify-content: space-between; padding: 0.5rem 0; border-bottom: 1px solid var(--border-color); font-size: 0.9rem;">
+            <span style="color: var(--text-secondary);">Pickup Time Slot:</span>
+            <strong style="color: var(--text-primary);" id="pickup-time-slot">Immediate (8-12 mins)</strong>
+          </div>
+          <div style="display: flex; justify-content: space-between; padding: 0.5rem 0; border-bottom: 1px solid var(--border-color); font-size: 0.9rem;">
+            <span style="color: var(--text-secondary);">Student Name:</span>
+            <strong style="color: var(--text-primary);" id="pickup-student-name">Aditya Verma</strong>
+          </div>
+          <div style="display: flex; justify-content: space-between; padding: 0.5rem 0; font-size: 0.9rem;">
+            <span style="color: var(--text-secondary);">Payment Method:</span>
+            <span class="badge badge-success" id="pickup-payment-badge">Campus Wallet</span>
+          </div>
+        </div>
+
+        <!-- Ordered Items Summary -->
+        <div class="card" style="padding: 1.75rem;">
+          <h3 style="font-size: 1.15rem; font-weight: 700; color: var(--text-primary); margin-bottom: 1rem;">
+            <i class="fa-solid fa-utensils text-primary"></i> Food in This Order
+          </h3>
+
+          <div id="tracking-items-list" style="margin-bottom: 1.25rem;">
+            <!-- Injected via JS -->
+          </div>
+
+          <div style="display: flex; justify-content: space-between; border-top: 1px dashed var(--border-color); padding-top: 0.75rem; margin-bottom: 1.5rem; font-size: 1.15rem;">
+            <strong>Total Paid:</strong>
+            <strong class="text-primary" id="track-total-paid">₹120</strong>
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+            <button class="btn btn-secondary btn-block btn-sm" onclick="window.print()">
+              <i class="fa-solid fa-print"></i> Print Receipt Token
+            </button>
+            <a href="orders.html" class="btn btn-outline-primary btn-block btn-sm">
+              <i class="fa-solid fa-clock-rotate-left"></i> View All Orders
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Mobile Bottom Navigation Bar -->
+  <nav class="mobile-bottom-bar" aria-label="Quick Mobile Navigation">
+    <a href="../index.html" class="bottom-bar-item">
+      <i class="fa-solid fa-house"></i>
+      <span>Home</span>
+    </a>
+    <a href="menu.html" class="bottom-bar-item">
+      <i class="fa-solid fa-burger"></i>
+      <span>Menu</span>
+    </a>
+    <a href="cart.html" class="bottom-bar-item">
+      <i class="fa-solid fa-cart-shopping"></i>
+      <span>Cart</span>
+      <span class="bottom-badge cart-count-badge" style="display: none;">0</span>
+    </a>
+    <a href="orders.html" class="bottom-bar-item">
+      <i class="fa-solid fa-receipt"></i>
+      <span>Orders</span>
+    </a>
+    <a href="dashboard.html" class="bottom-bar-item">
+      <i class="fa-solid fa-user"></i>
+      <span>Account</span>
+    </a>
+  </nav>
+
+  <!-- Core Scripts -->
+  <script src="../js/data.js"></script>
+  <script src="../js/utils.js"></script>
+  <script src="../js/api.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/main.js"></script>
+
+  <script>
+    let currentOrder = null;
+    let timerInterval = null;
+    let secondsRemaining = 480; // 8 mins
+
+    document.addEventListener("DOMContentLoaded", async () => {
+      API.init();
+
+      // Check URL parameters for specific order ID
+      const params = new URLSearchParams(window.location.search);
+      const reqId = params.get("orderId");
+
+      if (reqId) {
+        const res = await API.getOrderById(reqId);
+        if (res.success) {
+          currentOrder = res.data;
+        }
+      }
+
+      // If not in URL, get most recent active or latest order
+      if (!currentOrder) {
+        const ordersRes = await API.getOrders();
+        if (ordersRes.success && ordersRes.data.length > 0) {
+          currentOrder = ordersRes.data[0];
+        }
+      }
+
+      if (!currentOrder) {
+        document.getElementById("no-order-alert").style.display = "block";
+        document.getElementById("tracker-content-layout").style.display = "none";
+        return;
+      }
+
+      renderOrderTracker();
+      startCountdownTimer();
+    });
+
+    async function lookupOrder() {
+      const inputVal = document.getElementById("lookup-order-id").value.trim();
+      if (!inputVal) return;
+
+      const res = await API.getOrderById(inputVal);
+      if (res.success) {
+        currentOrder = res.data;
+        renderOrderTracker();
+        Utils.showToast(`Switched to Order ${currentOrder.orderId} ✓`, "info");
+      } else {
+        Utils.showToast("Order ID not found in system", "error");
+      }
+    }
+
+    function renderOrderTracker() {
+      document.getElementById("no-order-alert").style.display = "none";
+      document.getElementById("tracker-content-layout").style.display = "grid";
+
+      document.getElementById("track-token-display").textContent = currentOrder.tokenNumber || "#A-01";
+      document.getElementById("track-order-id-label").textContent = `Order ID: ${currentOrder.orderId}`;
+      document.getElementById("track-placed-time").textContent = `Placed: ${Utils.formatDate(currentOrder.orderTime)}`;
+      document.getElementById("pickup-counter-name").textContent = currentOrder.pickupCounter || "Counter 1 (Snacks & Beverages)";
+      document.getElementById("pickup-time-slot").textContent = currentOrder.pickupSlot || "Immediate";
+      document.getElementById("pickup-student-name").textContent = currentOrder.studentName || "Student";
+      document.getElementById("pickup-payment-badge").textContent = currentOrder.paymentMethod || "Campus Wallet";
+      document.getElementById("track-total-paid").textContent = `₹${currentOrder.totalAmount}`;
+      document.getElementById("step-counter-desc").textContent = `Hot meal ready at ${currentOrder.pickupCounter || 'Counter 1'}. Show token ${currentOrder.tokenNumber} at pickup.`;
+
+      // Render items list
+      const itemsList = document.getElementById("tracking-items-list");
+      itemsList.innerHTML = (currentOrder.items || []).map(i => `
+        <div style="display: flex; justify-content: space-between; padding: 0.4rem 0; font-size: 0.9rem; border-bottom: 1px solid var(--border-color);">
+          <span style="color: var(--text-primary);">${i.quantity}x ${i.name}</span>
+          <strong>₹${i.quantity * i.price}</strong>
+        </div>
+      `).join("");
+
+      updateTimelineState(currentOrder.orderStatus);
+    }
+
+    function updateTimelineState(status) {
+      const statusOrder = ["Pending", "Confirmed", "Preparing", "Ready", "Completed"];
+      const currentIdx = statusOrder.indexOf(status) !== -1 ? statusOrder.indexOf(status) : 2;
+
+      const pill = document.getElementById("track-status-pill");
+      if (status === "Completed") {
+        pill.className = "badge badge-success";
+        pill.textContent = "✓ Order Completed";
+        document.getElementById("countdown-box").style.display = "none";
+      } else if (status === "Ready") {
+        pill.className = "badge badge-warning";
+        pill.textContent = "🔔 Ready for Pickup!";
+        document.getElementById("countdown-box").style.display = "none";
+      } else {
+        pill.className = "badge badge-info";
+        pill.textContent = `● ${status} in Kitchen`;
+        document.getElementById("countdown-box").style.display = "block";
+      }
+
+      // Update 5 step classes
+      for (let step = 1; step <= 5; step++) {
+        const el = document.getElementById(`step-${step}`);
+        el.classList.remove("completed", "active");
+
+        const stepIdx = step - 1;
+        if (stepIdx < currentIdx) {
+          el.classList.add("completed");
+          el.querySelector(".step-icon-node").innerHTML = '<i class="fa-solid fa-check"></i>';
+        } else if (stepIdx === currentIdx) {
+          el.classList.add("active");
+          if (step === 3) el.querySelector(".step-icon-node").innerHTML = '<i class="fa-solid fa-fire-burner"></i>';
+          else if (step === 4) el.querySelector(".step-icon-node").innerHTML = '<i class="fa-solid fa-bell-concierge"></i>';
+          else if (step === 5) el.querySelector(".step-icon-node").innerHTML = '<i class="fa-solid fa-circle-check"></i>';
+          else el.querySelector(".step-icon-node").innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
+        } else {
+          el.querySelector(".step-icon-node").innerHTML = `<span style="font-size: 0.85rem; font-weight: 700;">${step}</span>`;
+        }
+      }
+    }
+
+    function startCountdownTimer() {
+      if (timerInterval) clearInterval(timerInterval);
+      const display = document.getElementById("countdown-display");
+
+      timerInterval = setInterval(() => {
+        if (secondsRemaining <= 0) {
+          clearInterval(timerInterval);
+          display.textContent = "00:00 (Ready)";
+          return;
+        }
+
+        secondsRemaining--;
+        const mins = String(Math.floor(secondsRemaining / 60)).padStart(2, "0");
+        const secs = String(secondsRemaining % 60).padStart(2, "0");
+        display.textContent = `${mins}:${secs}`;
+      }, 1000);
+    }
+
+    async function advanceOrderStatus() {
+      if (!currentOrder) return;
+      const pipeline = ["Confirmed", "Preparing", "Ready", "Completed"];
+      const curIdx = pipeline.indexOf(currentOrder.orderStatus);
+      const nextIdx = (curIdx + 1) % pipeline.length;
+      const nextStatus = pipeline[nextIdx];
+
+      await API.updateOrderStatus(currentOrder.orderId, nextStatus);
+      currentOrder.orderStatus = nextStatus;
+      renderOrderTracker();
+
+      if (nextStatus === "Ready") {
+        Utils.showToast(`🔔 Token ${currentOrder.tokenNumber} is READY for collection at ${currentOrder.pickupCounter}!`, "success", 4500);
+      } else {
+        Utils.showToast(`Kitchen status advanced to: ${nextStatus}`, "info", 1800);
+      }
+    }
+
+    async function resetOrderDemo() {
+      if (!currentOrder) return;
+      await API.updateOrderStatus(currentOrder.orderId, "Preparing");
+      currentOrder.orderStatus = "Preparing";
+      secondsRemaining = 480;
+      renderOrderTracker();
+      startCountdownTimer();
+      Utils.showToast("Order status reset to Preparing", "info");
+    }
+  </script>
+</body>
+</html>

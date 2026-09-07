@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kitchen Inventory & Stocks — CampusBite Admin</title>
+  <meta name="description" content="Track pantry supplies, vegetables, dairy, cooking oil, low-stock threshold warnings, and replenishment logs.">
+
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <!-- Core Stylesheets -->
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/admin.css">
+  <link rel="stylesheet" href="../css/responsive.css">
+</head>
+<body class="admin-body">
+
+  <!-- Admin Sidebar -->
+  <aside class="admin-sidebar">
+    <div class="admin-sidebar-header">
+      <div class="logo-icon-wrapper" style="background: var(--primary); color: #ffffff; width: 36px; height: 36px; font-size: 1rem;"><i class="fa-solid fa-utensils"></i></div>
+      <div>
+        <div style="font-weight: 800; font-size: 1.05rem; color: var(--text-primary); line-height: 1.2;">CampusBite</div>
+        <span class="admin-badge-role">Staff Admin</span>
+      </div>
+    </div>
+
+    <nav class="admin-nav">
+      <a href="dashboard.html" class="admin-nav-item"><i class="fa-solid fa-chart-pie"></i> Dashboard</a>
+      <a href="orders.html" class="admin-nav-item"><i class="fa-solid fa-bell-concierge"></i> Orders</a>
+      <a href="menu-management.html" class="admin-nav-item"><i class="fa-solid fa-burger"></i> Menu Management</a>
+      <a href="inventory.html" class="admin-nav-item active"><i class="fa-solid fa-boxes-stacked"></i> Inventory Stocks</a>
+      <a href="customers.html" class="admin-nav-item"><i class="fa-solid fa-users"></i> Students Ledger</a>
+      <a href="payments.html" class="admin-nav-item"><i class="fa-solid fa-credit-card"></i> Payments & UPI</a>
+      <a href="offers.html" class="admin-nav-item"><i class="fa-solid fa-ticket"></i> Offers & Coupons</a>
+      <a href="feedback.html" class="admin-nav-item"><i class="fa-solid fa-star-half-stroke"></i> Ratings & Reviews</a>
+      <a href="reports.html" class="admin-nav-item"><i class="fa-solid fa-file-invoice-dollar"></i> Sales Reports</a>
+      <a href="../index.html" class="admin-nav-item" target="_blank"><i class="fa-solid fa-arrow-up-right-from-square"></i> Student View</a>
+    </nav>
+
+    <div class="admin-sidebar-footer">
+      <div class="admin-profile-pill">
+        <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=80&q=80" alt="Admin" class="admin-avatar">
+        <div style="flex: 1; min-width: 0;">
+          <strong style="font-size: 0.85rem; color: var(--text-primary); display: block;">Dr. V. Sharma</strong>
+          <span style="font-size: 0.72rem; color: var(--text-muted);">Chief Supervisor</span>
+        </div>
+        <button onclick="Auth.logoutAdmin()" style="background: none; border: none; color: var(--accent-ruby); cursor: pointer;" title="Logout">
+          <i class="fa-solid fa-right-from-bracket"></i>
+        </button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Admin Main Viewport -->
+  <main class="admin-main">
+    <header class="admin-topbar">
+      <div class="admin-breadcrumb">
+        <a href="dashboard.html" style="color: var(--text-muted);">Dashboard</a>
+        <i class="fa-solid fa-chevron-right" style="font-size: 0.7rem;"></i>
+        <strong>Kitchen Raw Materials & Inventory</strong>
+      </div>
+
+      <div class="admin-topbar-actions">
+        <button class="nav-action-btn theme-toggle-btn" title="Toggle Dark/Light Mode">
+          <i class="fa-solid fa-moon"></i>
+        </button>
+      </div>
+    </header>
+
+    <div class="admin-content">
+      <!-- Title & Action -->
+      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+        <div>
+          <h1 style="font-size: 1.85rem; font-weight: 800; color: var(--text-primary); margin: 0 0 0.25rem;">Kitchen Inventory Control</h1>
+          <p style="color: var(--text-secondary); margin: 0; font-size: 0.95rem;">Monitor raw ingredient stocks, restock low supplies, and prevent kitchen stockouts.</p>
+        </div>
+        <button class="btn btn-primary" onclick="openAddSupplyModal()">
+          <i class="fa-solid fa-plus"></i> Add New Material
+        </button>
+      </div>
+
+      <!-- Quick Metrics Row -->
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+        <div class="card" style="padding: 1.25rem;">
+          <span style="font-size: 0.8rem; color: var(--text-muted); font-weight: 600;">TOTAL TRACKED ITEMS</span>
+          <strong style="font-size: 1.6rem; color: var(--text-primary); display: block;" id="inv-total-items">0</strong>
+        </div>
+        <div class="card" style="padding: 1.25rem;">
+          <span style="font-size: 0.8rem; color: var(--text-muted); font-weight: 600;">IN HEALTHY STOCK</span>
+          <strong style="font-size: 1.6rem; color: var(--accent-emerald); display: block;" id="inv-in-stock">0</strong>
+        </div>
+        <div class="card" style="padding: 1.25rem;">
+          <span style="font-size: 0.8rem; color: var(--text-muted); font-weight: 600;">LOW STOCK ALERT</span>
+          <strong style="font-size: 1.6rem; color: var(--accent-amber); display: block;" id="inv-low-stock">0</strong>
+        </div>
+        <div class="card" style="padding: 1.25rem;">
+          <span style="font-size: 0.8rem; color: var(--text-muted); font-weight: 600;">DEPLETED / ZERO</span>
+          <strong style="font-size: 1.6rem; color: var(--accent-ruby); display: block;" id="inv-out-stock">0</strong>
+        </div>
+      </div>
+
+      <!-- Warning Alert Banner for Low Stock -->
+      <div id="low-stock-alert-banner" style="display: none; background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3); border-radius: var(--radius-lg); padding: 1rem 1.25rem; align-items: center; justify-content: space-between; gap: 1rem;">
+        <div style="display: flex; align-items: center; gap: 0.75rem;">
+          <i class="fa-solid fa-triangle-exclamation text-ruby" style="font-size: 1.5rem;"></i>
+          <div>
+            <strong style="color: var(--accent-ruby); font-size: 0.95rem; display: block;">Replenishment Required Immediately</strong>
+            <span style="color: var(--text-secondary); font-size: 0.85rem;" id="low-stock-items-text">Items below minimum kitchen buffer threshold.</span>
+          </div>
+        </div>
+        <button class="btn btn-secondary btn-sm" onclick="filterByStatus('Low Stock')">Inspect Low Items</button>
+      </div>
+
+      <!-- Filter & Search Toolbar -->
+      <div class="card" style="padding: 1.25rem;">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+          <div class="input-icon-wrapper" style="max-width: 320px; width: 100%;">
+            <i class="fa-solid fa-magnifying-glass input-icon"></i>
+            <input type="text" id="inv-search" class="form-control" placeholder="Search ingredient or material..." oninput="filterInventory()">
+          </div>
+
+          <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+            <button class="btn btn-secondary btn-sm active" id="filter-all" onclick="filterByStatus('All')">All Items</button>
+            <button class="btn btn-secondary btn-sm" id="filter-in" onclick="filterByStatus('In Stock')">In Stock</button>
+            <button class="btn btn-secondary btn-sm" id="filter-low" onclick="filterByStatus('Low Stock')">Low Stock</button>
+            <button class="btn btn-secondary btn-sm" id="filter-out" onclick="filterByStatus('Out of Stock')">Depleted</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Inventory Table -->
+      <div class="card" style="padding: 0; overflow: hidden;">
+        <div style="overflow-x: auto;">
+          <table class="table" style="width: 100%; margin: 0;">
+            <thead>
+              <tr>
+                <th style="padding: 1rem 1.25rem;">Material / Ingredient</th>
+                <th>Category</th>
+                <th>Current Stock</th>
+                <th>Min Threshold</th>
+                <th>Stock Status</th>
+                <th>Last Restocked</th>
+                <th style="text-align: right; padding-right: 1.25rem;">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="inventory-table-body">
+              <!-- Injected via JavaScript -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Restock Modal -->
+  <div class="modal-backdrop" id="restock-modal" style="display: none;">
+    <div class="modal-dialog" style="max-width: 420px;">
+      <div class="modal-header">
+        <h3 class="modal-title" id="restock-item-title"><i class="fa-solid fa-boxes-stacked text-primary"></i> Restock Ingredient</h3>
+        <button class="modal-close" onclick="closeRestockModal()">&times;</button>
+      </div>
+      <div class="modal-body" style="padding: 1.5rem;">
+        <input type="hidden" id="restock-item-id">
+        <div class="form-group" style="margin-bottom: 1rem;">
+          <label class="form-label">Add Stock Quantity (<span id="restock-unit-label">kg</span>)</label>
+          <input type="number" id="restock-qty-input" class="form-control" min="1" value="10" required>
+        </div>
+        <div style="display: flex; gap: 0.5rem; margin-bottom: 1rem;">
+          <button type="button" class="btn btn-secondary btn-sm" onclick="document.getElementById('restock-qty-input').value = 5">+5</button>
+          <button type="button" class="btn btn-secondary btn-sm" onclick="document.getElementById('restock-qty-input').value = 10">+10</button>
+          <button type="button" class="btn btn-secondary btn-sm" onclick="document.getElementById('restock-qty-input').value = 25">+25</button>
+          <button type="button" class="btn btn-secondary btn-sm" onclick="document.getElementById('restock-qty-input').value = 50">+50</button>
+        </div>
+      </div>
+      <div class="modal-footer" style="display: flex; gap: 0.75rem;">
+        <button class="btn btn-secondary btn-sm btn-block" onclick="closeRestockModal()">Cancel</button>
+        <button class="btn btn-primary btn-sm btn-block" onclick="confirmRestock()"><i class="fa-solid fa-check"></i> Add to Stock</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add New Material Modal -->
+  <div class="modal-backdrop" id="add-material-modal" style="display: none;">
+    <div class="modal-dialog" style="max-width: 480px;">
+      <div class="modal-header">
+        <h3 class="modal-title"><i class="fa-solid fa-plus text-primary"></i> Add Raw Ingredient</h3>
+        <button class="modal-close" onclick="closeAddSupplyModal()">&times;</button>
+      </div>
+      <form id="add-material-form" onsubmit="handleCreateMaterial(event)">
+        <div class="modal-body" style="padding: 1.5rem;">
+          <div class="form-group" style="margin-bottom: 1rem;">
+            <label class="form-label">Material Name <span class="text-danger">*</span></label>
+            <input type="text" id="mat-name" class="form-control" placeholder="e.g. Sona Masuri Rice" required>
+          </div>
+          <div class="form-group" style="margin-bottom: 1rem;">
+            <label class="form-label">Category</label>
+            <select id="mat-cat" class="form-control">
+              <option value="Grains & Flours">Grains & Flours</option>
+              <option value="Dairy & Milk">Dairy & Milk</option>
+              <option value="Fresh Produce">Fresh Produce</option>
+              <option value="Cooking Oils & Spices">Cooking Oils & Spices</option>
+              <option value="Bakery & Bread">Bakery & Bread</option>
+              <option value="Beverage Ingredients">Beverage Ingredients</option>
+            </select>
+          </div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.75rem;">
+            <div class="form-group">
+              <label class="form-label">Stock</label>
+              <input type="number" id="mat-stock" class="form-control" value="25" min="1" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Unit</label>
+              <input type="text" id="mat-unit" class="form-control" value="kg" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Min Threshold</label>
+              <input type="number" id="mat-min" class="form-control" value="10" min="1" required>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer" style="display: flex; gap: 0.75rem;">
+          <button type="button" class="btn btn-secondary btn-sm btn-block" onclick="closeAddSupplyModal()">Cancel</button>
+          <button type="submit" class="btn btn-primary btn-sm btn-block"><i class="fa-solid fa-floppy-disk"></i> Save Material</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="../js/data.js"></script>
+  <script src="../js/utils.js"></script>
+  <script src="../js/api.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/main.js"></script>
+
+  <script>
+    let inventoryData = [];
+    let currentStatusFilter = "All";
+
+    document.addEventListener("DOMContentLoaded", async () => {
+      API.init();
+      if (!Auth.requireAdminAuth("../admin-login.html")) return;
+      loadInventory();
+    });
+
+    async function loadInventory() {
+      inventoryData = await API.getInventory();
+      updateMetricCounters();
+      filterInventory();
+    }
+
+    function updateMetricCounters() {
+      const total = inventoryData.length;
+      const inStock = inventoryData.filter(i => i.status === "In Stock").length;
+      const lowStock = inventoryData.filter(i => i.status === "Low Stock").length;
+      const outStock = inventoryData.filter(i => i.status === "Out of Stock").length;
+
+      document.getElementById("inv-total-items").textContent = total;
+      document.getElementById("inv-in-stock").textContent = inStock;
+      document.getElementById("inv-low-stock").textContent = lowStock;
+      document.getElementById("inv-out-stock").textContent = outStock;
+
+      const banner = document.getElementById("low-stock-alert-banner");
+      if (lowStock > 0 || outStock > 0) {
+        banner.style.display = "flex";
+        const criticalItems = inventoryData.filter(i => i.status !== "In Stock").map(i => i.name).slice(0, 4).join(", ");
+        document.getElementById("low-stock-items-text").textContent = `Critical items: ${criticalItems}${lowStock + outStock > 4 ? ' and more...' : ''}`;
+      } else {
+        banner.style.display = "none";
+      }
+    }
+
+    function filterByStatus(status) {
+      currentStatusFilter = status;
+      filterInventory();
+    }
+
+    function filterInventory() {
+      const q = document.getElementById("inv-search").value.toLowerCase().trim();
+
+      const filtered = inventoryData.filter(item => {
+        if (currentStatusFilter !== "All" && item.status !== currentStatusFilter) return false;
+        if (q && !item.name.toLowerCase().includes(q) && !(item.category || "").toLowerCase().includes(q)) return false;
+        return true;
+      });
+
+      renderTable(filtered);
+    }
+
+    function renderTable(items) {
+      const tbody = document.getElementById("inventory-table-body");
+      if (items.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; padding: 2rem; color: var(--text-muted);">No inventory items match criteria.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = items.map(item => {
+        const badgeClass = 
+          item.status === "In Stock" ? "badge-success" :
+          item.status === "Low Stock" ? "badge-warning" : "badge-danger";
+
+        return `
+          <tr style="border-bottom: 1px solid var(--border-color);">
+            <td style="padding: 0.85rem 1.25rem;">
+              <strong style="color: var(--text-primary); font-size: 0.95rem; display: block;">${item.name}</strong>
+              <span style="font-size: 0.75rem; color: var(--text-muted); font-family: monospace;">${item.id}</span>
+            </td>
+            <td><span class="badge" style="background: var(--bg-tertiary);">${item.category || 'Kitchen Supplies'}</span></td>
+            <td><strong style="font-size: 1.1rem; color: var(--text-primary);">${item.currentStock}</strong> <span style="font-size: 0.8rem; color: var(--text-muted);">${item.unit}</span></td>
+            <td style="color: var(--text-muted); font-size: 0.88rem;">${item.minStock} ${item.unit}</td>
+            <td><span class="badge ${badgeClass}">${item.status}</span></td>
+            <td style="color: var(--text-muted); font-size: 0.82rem;">${item.lastRestocked || 'Recent'}</td>
+            <td style="text-align: right; padding-right: 1.25rem;">
+              <div style="display: flex; justify-content: flex-end; gap: 0.35rem;">
+                <button class="btn btn-primary btn-sm" onclick="openRestockModal('${item.id}')" title="Quick Restock">
+                  <i class="fa-solid fa-plus"></i> Restock
+                </button>
+                <button class="btn btn-outline-danger btn-sm" onclick="deleteInventoryItem('${item.id}')" title="Delete Item">
+                  <i class="fa-solid fa-trash"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+        `;
+      }).join("");
+    }
+
+    function openRestockModal(id) {
+      const item = inventoryData.find(i => i.id === id);
+      if (!item) return;
+
+      document.getElementById("restock-item-id").value = item.id;
+      document.getElementById("restock-item-title").innerHTML = `<i class="fa-solid fa-boxes-stacked text-primary"></i> Restock ${item.name}`;
+      document.getElementById("restock-unit-label").textContent = item.unit;
+      document.getElementById("restock-qty-input").value = 10;
+      document.getElementById("restock-modal").style.display = "flex";
+    }
+
+    function closeRestockModal() {
+      document.getElementById("restock-modal").style.display = "none";
+    }
+
+    async function confirmRestock() {
+      const id = document.getElementById("restock-item-id").value;
+      const addQty = parseFloat(document.getElementById("restock-qty-input").value);
+      const item = inventoryData.find(i => i.id === id);
+      if (!item || !addQty) return;
+
+      const newTotal = (item.currentStock || 0) + addQty;
+      await API.updateInventoryStock(id, newTotal);
+      closeRestockModal();
+      Utils.showToast(`Restocked ${item.name} (+${addQty} ${item.unit}) ✓`, "success", 2500);
+      loadInventory();
+    }
+
+    function openAddSupplyModal() {
+      document.getElementById("add-material-form").reset();
+      document.getElementById("add-material-modal").style.display = "flex";
+    }
+
+    function closeAddSupplyModal() {
+      document.getElementById("add-material-modal").style.display = "none";
+    }
+
+    async function handleCreateMaterial(e) {
+      e.preventDefault();
+      const items = Utils.getStorage(STORAGE_KEYS.INVENTORY, []);
+      const newItem = {
+        id: `INV_${String(items.length + 1).padStart(3, "0")}`,
+        name: document.getElementById("mat-name").value.trim(),
+        category: document.getElementById("mat-cat").value,
+        currentStock: parseFloat(document.getElementById("mat-stock").value),
+        unit: document.getElementById("mat-unit").value.trim(),
+        minStock: parseFloat(document.getElementById("mat-min").value),
+        status: "In Stock",
+        lastRestocked: new Date().toISOString().split("T")[0]
+      };
+
+      if (newItem.currentStock <= newItem.minStock) {
+        newItem.status = newItem.currentStock <= 0 ? "Out of Stock" : "Low Stock";
+      }
+
+      items.push(newItem);
+      Utils.setStorage(STORAGE_KEYS.INVENTORY, items);
+      closeAddSupplyModal();
+      Utils.showToast(`Added ${newItem.name} to inventory records! ✓`, "success");
+      loadInventory();
+    }
+
+    function deleteInventoryItem(id) {
+      if (!confirm("Are you sure you want to remove this item from inventory tracking?")) return;
+      let items = Utils.getStorage(STORAGE_KEYS.INVENTORY, []);
+      items = items.filter(i => i.id !== id);
+      Utils.setStorage(STORAGE_KEYS.INVENTORY, items);
+      Utils.showToast("Item deleted from inventory", "info");
+      loadInventory();
+    }
+  </script>
+</body>
+</html>

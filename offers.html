@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Offers & Coupons Management — CampusBite Admin</title>
+  <meta name="description" content="Generate promo codes, discount percentages, minimum cart requirements, and expiry dates for college canteen promotions.">
+
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <!-- Core Stylesheets -->
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/admin.css">
+  <link rel="stylesheet" href="../css/responsive.css">
+</head>
+<body class="admin-body">
+
+  <!-- Admin Sidebar -->
+  <aside class="admin-sidebar">
+    <div class="admin-sidebar-header">
+      <div class="logo-icon-wrapper" style="background: var(--primary); color: #ffffff; width: 36px; height: 36px; font-size: 1rem;"><i class="fa-solid fa-utensils"></i></div>
+      <div>
+        <div style="font-weight: 800; font-size: 1.05rem; color: var(--text-primary); line-height: 1.2;">CampusBite</div>
+        <span class="admin-badge-role">Staff Admin</span>
+      </div>
+    </div>
+
+    <nav class="admin-nav">
+      <a href="dashboard.html" class="admin-nav-item"><i class="fa-solid fa-chart-pie"></i> Dashboard</a>
+      <a href="orders.html" class="admin-nav-item"><i class="fa-solid fa-bell-concierge"></i> Orders</a>
+      <a href="menu-management.html" class="admin-nav-item"><i class="fa-solid fa-burger"></i> Menu Management</a>
+      <a href="inventory.html" class="admin-nav-item"><i class="fa-solid fa-boxes-stacked"></i> Inventory Stocks</a>
+      <a href="customers.html" class="admin-nav-item"><i class="fa-solid fa-users"></i> Students Ledger</a>
+      <a href="payments.html" class="admin-nav-item"><i class="fa-solid fa-credit-card"></i> Payments & UPI</a>
+      <a href="offers.html" class="admin-nav-item active"><i class="fa-solid fa-ticket"></i> Offers & Coupons</a>
+      <a href="feedback.html" class="admin-nav-item"><i class="fa-solid fa-star-half-stroke"></i> Ratings & Reviews</a>
+      <a href="reports.html" class="admin-nav-item"><i class="fa-solid fa-file-invoice-dollar"></i> Sales Reports</a>
+      <a href="../index.html" class="admin-nav-item" target="_blank"><i class="fa-solid fa-arrow-up-right-from-square"></i> Student View</a>
+    </nav>
+
+    <div class="admin-sidebar-footer">
+      <div class="admin-profile-pill">
+        <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=80&q=80" alt="Admin" class="admin-avatar">
+        <div style="flex: 1; min-width: 0;">
+          <strong style="font-size: 0.85rem; color: var(--text-primary); display: block;">Dr. V. Sharma</strong>
+          <span style="font-size: 0.72rem; color: var(--text-muted);">Chief Supervisor</span>
+        </div>
+        <button onclick="Auth.logoutAdmin()" style="background: none; border: none; color: var(--accent-ruby); cursor: pointer;" title="Logout">
+          <i class="fa-solid fa-right-from-bracket"></i>
+        </button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Admin Main Viewport -->
+  <main class="admin-main">
+    <header class="admin-topbar">
+      <div class="admin-breadcrumb">
+        <a href="dashboard.html" style="color: var(--text-muted);">Dashboard</a>
+        <i class="fa-solid fa-chevron-right" style="font-size: 0.7rem;"></i>
+        <strong>Promotional Offers & Discount Coupons</strong>
+      </div>
+
+      <div class="admin-topbar-actions">
+        <button class="nav-action-btn theme-toggle-btn" title="Toggle Dark/Light Mode">
+          <i class="fa-solid fa-moon"></i>
+        </button>
+      </div>
+    </header>
+
+    <div class="admin-content">
+      <!-- Title & Action -->
+      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+        <div>
+          <h1 style="font-size: 1.85rem; font-weight: 800; color: var(--text-primary); margin: 0 0 0.25rem;">Canteen Promo Coupons</h1>
+          <p style="color: var(--text-secondary); margin: 0; font-size: 0.95rem;">Configure student promo discounts, set minimum cart amounts, and track coupon redemptions.</p>
+        </div>
+        <button class="btn btn-primary" onclick="openAddCouponModal()">
+          <i class="fa-solid fa-plus"></i> Create New Coupon
+        </button>
+      </div>
+
+      <!-- Active Coupons Grid -->
+      <div id="coupons-cards-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 1.5rem;">
+        <!-- Injected via JavaScript -->
+      </div>
+    </div>
+  </main>
+
+  <!-- Create Coupon Modal -->
+  <div class="modal-backdrop" id="coupon-modal" style="display: none;">
+    <div class="modal-dialog" style="max-width: 480px;">
+      <div class="modal-header">
+        <h3 class="modal-title"><i class="fa-solid fa-ticket text-primary"></i> Create Promo Coupon</h3>
+        <button class="modal-close" onclick="closeCouponModal()">&times;</button>
+      </div>
+      <form id="coupon-form" onsubmit="handleCreateCoupon(event)">
+        <div class="modal-body" style="padding: 1.5rem;">
+          <div class="form-group" style="margin-bottom: 1rem;">
+            <label class="form-label">Coupon Code (Uppercase)</label>
+            <input type="text" id="coup-code" class="form-control" placeholder="e.g. EXAMBOOST25" required style="text-transform: uppercase; font-weight: 700; letter-spacing: 0.05em;">
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+            <div class="form-group">
+              <label class="form-label">Discount (%)</label>
+              <input type="number" id="coup-pct" class="form-control" placeholder="20" min="1" max="100" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Max Discount (₹)</label>
+              <input type="number" id="coup-max" class="form-control" placeholder="50" min="10" value="50">
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+            <div class="form-group">
+              <label class="form-label">Min Order (₹)</label>
+              <input type="number" id="coup-min" class="form-control" placeholder="80" min="1" value="80">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Expiry Date</label>
+              <input type="date" id="coup-expiry" class="form-control" required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Description / Tagline</label>
+            <input type="text" id="coup-desc" class="form-control" placeholder="20% off on snacks during exams" required>
+          </div>
+        </div>
+        <div class="modal-footer" style="display: flex; gap: 0.75rem;">
+          <button type="button" class="btn btn-secondary btn-sm btn-block" onclick="closeCouponModal()">Cancel</button>
+          <button type="submit" class="btn btn-primary btn-sm btn-block"><i class="fa-solid fa-check"></i> Launch Coupon</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="../js/data.js"></script>
+  <script src="../js/utils.js"></script>
+  <script src="../js/api.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/main.js"></script>
+
+  <script>
+    let couponsList = [];
+
+    document.addEventListener("DOMContentLoaded", async () => {
+      API.init();
+      if (!Auth.requireAdminAuth("../admin-login.html")) return;
+
+      // Set default expiry date to 30 days ahead
+      const nextMonth = new Date();
+      nextMonth.setDate(nextMonth.getDate() + 30);
+      document.getElementById("coup-expiry").value = nextMonth.toISOString().split("T")[0];
+
+      loadCoupons();
+    });
+
+    async function loadCoupons() {
+      couponsList = await API.getCoupons();
+      renderCoupons();
+    }
+
+    function renderCoupons() {
+      const grid = document.getElementById("coupons-cards-grid");
+      if (couponsList.length === 0) {
+        grid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 3rem; color: var(--text-muted);">No promotional coupons created yet.</div>`;
+        return;
+      }
+
+      grid.innerHTML = couponsList.map(c => `
+        <div class="card" style="padding: 1.5rem; position: relative; border-top: 4px solid var(--primary);">
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.75rem;">
+            <div style="font-family: monospace; font-size: 1.4rem; font-weight: 800; color: var(--primary); letter-spacing: 0.05em;">
+              ${c.code}
+            </div>
+            <span class="badge ${c.isActive ? 'badge-success' : 'badge-danger'}">
+              ${c.isActive ? 'Active' : 'Expired'}
+            </span>
+          </div>
+
+          <p style="color: var(--text-primary); font-size: 0.95rem; font-weight: 600; margin: 0 0 0.75rem;">
+            ${c.description || `${c.discountPercent}% OFF`}
+          </p>
+
+          <div style="background: var(--bg-tertiary); padding: 0.75rem; border-radius: var(--radius-md); font-size: 0.85rem; line-height: 1.6; margin-bottom: 1.25rem;">
+            <div>• <strong>Discount:</strong> ${c.discountPercent ? `${c.discountPercent}% OFF` : `₹${c.discountAmount} OFF`}</div>
+            <div>• <strong>Min Order:</strong> ₹${c.minOrder || 0}</div>
+            <div>• <strong>Expires:</strong> ${c.expiryDate || 'Unlimited'}</div>
+            <div>• <strong>Times Redeemed:</strong> ${c.usedCount || 0} orders</div>
+          </div>
+
+          <div style="display: flex; gap: 0.5rem;">
+            <button class="btn btn-secondary btn-sm btn-block" onclick="toggleCouponStatus('${c.code}')">
+              ${c.isActive ? 'Deactivate' : 'Reactivate'}
+            </button>
+            <button class="btn btn-outline-danger btn-sm" onclick="deleteCoupon('${c.code}')">
+              <i class="fa-solid fa-trash"></i>
+            </button>
+          </div>
+        </div>
+      `).join("");
+    }
+
+    function openAddCouponModal() {
+      document.getElementById("coupon-modal").style.display = "flex";
+    }
+
+    function closeCouponModal() {
+      document.getElementById("coupon-modal").style.display = "none";
+    }
+
+    async function handleCreateCoupon(e) {
+      e.preventDefault();
+      const code = document.getElementById("coup-code").value.trim().toUpperCase();
+      const pct = parseFloat(document.getElementById("coup-pct").value);
+      const max = parseFloat(document.getElementById("coup-max").value);
+      const min = parseFloat(document.getElementById("coup-min").value);
+      const expiry = document.getElementById("coup-expiry").value;
+      const desc = document.getElementById("coup-desc").value.trim();
+
+      const newCoupon = {
+        code,
+        discountPercent: pct,
+        maxDiscount: max,
+        minOrder: min,
+        expiryDate: expiry,
+        description: desc
+      };
+
+      await API.addCoupon(newCoupon);
+      closeCouponModal();
+      Utils.showToast(`Promo Coupon '${code}' created! Students can use it at checkout. ✓`, "success", 3000);
+      loadCoupons();
+    }
+
+    function toggleCouponStatus(code) {
+      const coupons = Utils.getStorage(STORAGE_KEYS.COUPONS, []);
+      const c = coupons.find(item => item.code === code);
+      if (c) {
+        c.isActive = !c.isActive;
+        Utils.setStorage(STORAGE_KEYS.COUPONS, coupons);
+        Utils.showToast(`Coupon status changed`, "info");
+        loadCoupons();
+      }
+    }
+
+    function deleteCoupon(code) {
+      if (!confirm(`Delete coupon ${code}?`)) return;
+      let coupons = Utils.getStorage(STORAGE_KEYS.COUPONS, []);
+      coupons = coupons.filter(item => item.code !== code);
+      Utils.setStorage(STORAGE_KEYS.COUPONS, coupons);
+      Utils.showToast("Coupon deleted", "info");
+      loadCoupons();
+    }
+  </script>
+</body>
+</html>

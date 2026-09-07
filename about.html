@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About Our Canteen — CampusBite</title>
+  <meta name="description" content="Discover our culinary values, hygiene standards, opening hours, dining facilities, and student community food policies.">
+
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <!-- Core Stylesheets -->
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/responsive.css">
+
+  <style>
+    .about-hero {
+      background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(99, 102, 241, 0.05));
+      border-radius: var(--radius-xl);
+      padding: 3.5rem 2rem;
+      text-align: center;
+      margin-bottom: 3rem;
+      border: 1px solid var(--border-color);
+    }
+
+    .facilities-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1.5rem;
+      margin: 2.5rem 0;
+    }
+
+    .facility-card {
+      background: var(--bg-surface);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border-color);
+      padding: 1.75rem;
+      text-align: center;
+      box-shadow: var(--shadow-sm);
+      transition: transform 0.2s;
+    }
+
+    .facility-card:hover {
+      transform: translateY(-4px);
+    }
+
+    .facility-icon-circle {
+      width: 58px;
+      height: 58px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      margin: 0 auto 1rem;
+    }
+
+    .hours-table-box {
+      background: var(--bg-surface);
+      border-radius: var(--radius-xl);
+      border: 1px solid var(--border-color);
+      padding: 2rem;
+      box-shadow: var(--shadow-sm);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="site-header">
+    <div class="container">
+      <nav class="navbar">
+        <a href="../index.html" class="brand-logo">
+          <div class="logo-icon-wrapper"><i class="fa-solid fa-utensils"></i></div>
+          <div class="brand-name">
+            <span class="brand-title">CampusBite</span>
+            <span class="brand-tagline">College Canteen</span>
+          </div>
+        </a>
+
+        <ul class="nav-links">
+          <li><a href="../index.html" class="nav-link"><i class="fa-solid fa-house"></i> Home</a></li>
+          <li><a href="menu.html" class="nav-link"><i class="fa-solid fa-burger"></i> Menu</a></li>
+          <li><a href="orders.html" class="nav-link"><i class="fa-solid fa-receipt"></i> Orders</a></li>
+          <li><a href="tracking.html" class="nav-link"><i class="fa-solid fa-satellite-dish"></i> Live Track</a></li>
+          <li><a href="about.html" class="nav-link active"><i class="fa-solid fa-circle-info"></i> About</a></li>
+          <li><a href="contact.html" class="nav-link"><i class="fa-solid fa-envelope"></i> Contact</a></li>
+        </ul>
+
+        <div class="nav-actions">
+          <button class="nav-action-btn theme-toggle-btn" title="Toggle Dark/Light Mode" aria-label="Toggle Theme">
+            <i class="fa-solid fa-moon"></i>
+          </button>
+
+          <a href="cart.html" class="nav-action-btn" title="View Cart" aria-label="Shopping Cart">
+            <i class="fa-solid fa-cart-shopping"></i>
+            <span class="badge-counter cart-count-badge" style="display: none;">0</span>
+          </a>
+
+          <div class="nav-user-container"></div>
+
+          <button class="hamburger-btn" aria-label="Open Navigation Menu">
+            <i class="fa-solid fa-bars"></i>
+          </button>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Mobile Drawer -->
+  <div class="drawer-backdrop"></div>
+  <aside class="mobile-drawer" aria-label="Mobile Navigation">
+    <div class="drawer-header">
+      <div class="brand-logo">
+        <div class="logo-icon-wrapper"><i class="fa-solid fa-utensils"></i></div>
+        <span class="brand-title">CampusBite</span>
+      </div>
+      <button class="drawer-close-btn" aria-label="Close Menu">&times;</button>
+    </div>
+    <div class="drawer-body">
+      <ul class="drawer-links">
+        <li><a href="../index.html" class="drawer-link"><i class="fa-solid fa-house"></i> Home</a></li>
+        <li><a href="menu.html" class="drawer-link"><i class="fa-solid fa-burger"></i> Digital Menu</a></li>
+        <li><a href="cart.html" class="drawer-link"><i class="fa-solid fa-cart-shopping"></i> My Cart</a></li>
+        <li><a href="orders.html" class="drawer-link"><i class="fa-solid fa-receipt"></i> Order History</a></li>
+        <li><a href="tracking.html" class="drawer-link"><i class="fa-solid fa-satellite-dish"></i> Live Tracking</a></li>
+        <li><a href="wallet.html" class="drawer-link"><i class="fa-solid fa-wallet"></i> Campus Wallet</a></li>
+        <li><a href="favorites.html" class="drawer-link"><i class="fa-solid fa-heart"></i> Favorites</a></li>
+        <li><a href="profile.html" class="drawer-link"><i class="fa-solid fa-user"></i> My Profile</a></li>
+        <li><a href="about.html" class="drawer-link active"><i class="fa-solid fa-circle-info"></i> About Canteen</a></li>
+        <li><a href="contact.html" class="drawer-link"><i class="fa-solid fa-envelope"></i> Help & Contact</a></li>
+        <li><a href="../admin-login.html" class="drawer-link text-primary"><i class="fa-solid fa-user-shield"></i> Staff Portal</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <!-- Page Content -->
+  <main class="container" style="padding-top: 2.5rem; padding-bottom: 5rem;">
+    <!-- Hero Box -->
+    <div class="about-hero">
+      <span class="badge badge-primary" style="margin-bottom: 0.75rem;"><i class="fa-solid fa-award"></i> FSSAI 5-Star Clean Campus Kitchen</span>
+      <h1 style="font-size: 2.6rem; font-weight: 900; color: var(--text-primary); margin-bottom: 1rem;">
+        Fueling Campus Life With Fresh, Quality Food
+      </h1>
+      <p style="max-width: 720px; margin: 0 auto; color: var(--text-secondary); font-size: 1.1rem; line-height: 1.6;">
+        CampusBite is the official smart digital canteen management platform designed to eliminate waiting queues, ensure rigorous hygiene standards, and deliver hot meals prepared on-demand for college students and faculty.
+      </p>
+    </div>
+
+    <!-- Opening Hours & Location Grid -->
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-bottom: 3.5rem;">
+      <!-- Opening Hours -->
+      <div class="hours-table-box">
+        <h2 style="font-size: 1.35rem; font-weight: 800; color: var(--text-primary); margin-bottom: 1.25rem; display: flex; align-items: center; gap: 0.5rem;">
+          <i class="fa-regular fa-clock text-primary"></i> Canteen Operating Hours
+        </h2>
+        <div style="display: flex; flex-direction: column; gap: 0.75rem; font-size: 0.95rem;">
+          <div style="display: flex; justify-content: space-between; padding: 0.75rem 0; border-bottom: 1px solid var(--border-color);">
+            <strong style="color: var(--text-primary);">Monday – Friday:</strong>
+            <span class="badge badge-success">8:00 AM – 6:00 PM</span>
+          </div>
+          <div style="display: flex; justify-content: space-between; padding: 0.75rem 0; border-bottom: 1px solid var(--border-color);">
+            <strong style="color: var(--text-primary);">Saturday:</strong>
+            <span class="badge badge-warning">8:00 AM – 3:00 PM</span>
+          </div>
+          <div style="display: flex; justify-content: space-between; padding: 0.75rem 0;">
+            <strong style="color: var(--text-primary);">Sunday & Campus Holidays:</strong>
+            <span class="badge badge-danger">Closed for Sanitation</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Campus Location -->
+      <div class="hours-table-box">
+        <h2 style="font-size: 1.35rem; font-weight: 800; color: var(--text-primary); margin-bottom: 1.25rem; display: flex; align-items: center; gap: 0.5rem;">
+          <i class="fa-solid fa-location-dot text-primary"></i> Campus Location & Access
+        </h2>
+        <p style="color: var(--text-secondary); line-height: 1.6; margin-bottom: 1rem;">
+          Located centrally at the <strong>Student Activity Center (SAC)</strong>, Ground Floor, Central Courtyard. Easy walking access from Computer Science, Mechanical, and Library blocks.
+        </p>
+        <div style="background: var(--bg-tertiary); padding: 1rem; border-radius: var(--radius-md); font-size: 0.9rem;">
+          <div><i class="fa-solid fa-phone text-primary" style="width: 20px;"></i> <strong>Intercom:</strong> Ext. 8421 / 8422</div>
+          <div style="margin-top: 0.35rem;"><i class="fa-solid fa-envelope text-primary" style="width: 20px;"></i> <strong>Email:</strong> canteen@college.edu</div>
+          <div style="margin-top: 0.35rem;"><i class="fa-solid fa-user-tie text-primary" style="width: 20px;"></i> <strong>Canteen Supervisor:</strong> Mr. Ramesh Joshi</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Facilities Section -->
+    <div style="text-align: center; margin-bottom: 2rem;">
+      <h2 style="font-size: 2rem; font-weight: 800; color: var(--text-primary);">Campus Canteen Facilities</h2>
+      <p style="color: var(--text-secondary);">Engineered for maximum hygiene, comfort, and zero queue delays.</p>
+    </div>
+
+    <div class="facilities-grid">
+      <div class="facility-card">
+        <div class="facility-icon-circle" style="background: rgba(245, 158, 11, 0.15); color: var(--primary);">
+          <i class="fa-solid fa-chair"></i>
+        </div>
+        <h3 style="font-size: 1.1rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.5rem;">350+ Seating Capacity</h3>
+        <p style="color: var(--text-secondary); font-size: 0.88rem; line-height: 1.5; margin: 0;">Spacious air-conditioned dining hall with ergonomic group seating and charging docks.</p>
+      </div>
+
+      <div class="facility-card">
+        <div class="facility-icon-circle" style="background: rgba(16, 185, 129, 0.15); color: var(--accent-emerald);">
+          <i class="fa-solid fa-qrcode"></i>
+        </div>
+        <h3 style="font-size: 1.1rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.5rem;">Zero-Queue QR Pickup</h3>
+        <p style="color: var(--text-secondary); font-size: 0.88rem; line-height: 1.5; margin: 0;">Pre-order on phone, receive your token, and collect immediately at designated counter.</p>
+      </div>
+
+      <div class="facility-card">
+        <div class="facility-icon-circle" style="background: rgba(99, 102, 241, 0.15); color: #6366f1;">
+          <i class="fa-solid fa-wifi"></i>
+        </div>
+        <h3 style="font-size: 1.1rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.5rem;">High-Speed Campus Wi-Fi</h3>
+        <p style="color: var(--text-secondary); font-size: 0.88rem; line-height: 1.5; margin: 0;">Seamless eduroam connectivity throughout dining areas for group study and project discussions.</p>
+      </div>
+
+      <div class="facility-card">
+        <div class="facility-icon-circle" style="background: rgba(239, 68, 68, 0.15); color: var(--accent-ruby);">
+          <i class="fa-solid fa-hand-sparkles"></i>
+        </div>
+        <h3 style="font-size: 1.1rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.5rem;">RO Water & Sanitation</h3>
+        <p style="color: var(--text-secondary); font-size: 0.88rem; line-height: 1.5; margin: 0;">Multi-stage UV+RO drinking water stations and automatic contactless hand sanitizers.</p>
+      </div>
+    </div>
+
+    <!-- Canteen Code of Conduct & Rules -->
+    <div class="card" style="padding: 2rem; margin-top: 3rem;">
+      <h2 style="font-size: 1.35rem; font-weight: 800; color: var(--text-primary); margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
+        <i class="fa-solid fa-scale-balanced text-primary"></i> Campus Dining Guidelines & Etiquette
+      </h2>
+      <ul style="color: var(--text-secondary); font-size: 0.95rem; line-height: 1.8; padding-left: 1.5rem; margin: 0;">
+        <li><strong>Tray Return:</strong> Please return your empty plates and cutlery to the designated cleaning conveyor belt after dining.</li>
+        <li><strong>Food Waste Reduction:</strong> Order only what you can consume to support our campus green sustainability initiative.</li>
+        <li><strong>Token Calling:</strong> Keep your order tracking screen open or listen for counter display announcements.</li>
+        <li><strong>Outside Food:</strong> Outside commercial packaged food is discouraged inside the main dining hall during peak lunch hours.</li>
+        <li><strong>Hygiene Standard:</strong> Kitchen chefs and food servers adhere to mandatory chef caps, gloves, and daily health screenings.</li>
+      </ul>
+    </div>
+  </main>
+
+  <!-- Mobile Bottom Navigation Bar -->
+  <nav class="mobile-bottom-bar" aria-label="Quick Mobile Navigation">
+    <a href="../index.html" class="bottom-bar-item">
+      <i class="fa-solid fa-house"></i>
+      <span>Home</span>
+    </a>
+    <a href="menu.html" class="bottom-bar-item">
+      <i class="fa-solid fa-burger"></i>
+      <span>Menu</span>
+    </a>
+    <a href="cart.html" class="bottom-bar-item">
+      <i class="fa-solid fa-cart-shopping"></i>
+      <span>Cart</span>
+      <span class="bottom-badge cart-count-badge" style="display: none;">0</span>
+    </a>
+    <a href="orders.html" class="bottom-bar-item">
+      <i class="fa-solid fa-receipt"></i>
+      <span>Orders</span>
+    </a>
+    <a href="dashboard.html" class="bottom-bar-item">
+      <i class="fa-solid fa-user"></i>
+      <span>Account</span>
+    </a>
+  </nav>
+
+  <!-- Scripts -->
+  <script src="../js/data.js"></script>
+  <script src="../js/utils.js"></script>
+  <script src="../js/api.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/main.js"></script>
+</body>
+</html>

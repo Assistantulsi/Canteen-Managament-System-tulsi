@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Feedback & Ratings — CampusBite Admin</title>
+  <meta name="description" content="Review student culinary ratings, food quality reviews, kitchen cleanliness scores, and campus dining suggestions.">
+
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <!-- Core Stylesheets -->
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/admin.css">
+  <link rel="stylesheet" href="../css/responsive.css">
+</head>
+<body class="admin-body">
+
+  <!-- Admin Sidebar -->
+  <aside class="admin-sidebar">
+    <div class="admin-sidebar-header">
+      <div class="logo-icon-wrapper" style="background: var(--primary); color: #ffffff; width: 36px; height: 36px; font-size: 1rem;"><i class="fa-solid fa-utensils"></i></div>
+      <div>
+        <div style="font-weight: 800; font-size: 1.05rem; color: var(--text-primary); line-height: 1.2;">CampusBite</div>
+        <span class="admin-badge-role">Staff Admin</span>
+      </div>
+    </div>
+
+    <nav class="admin-nav">
+      <a href="dashboard.html" class="admin-nav-item"><i class="fa-solid fa-chart-pie"></i> Dashboard</a>
+      <a href="orders.html" class="admin-nav-item"><i class="fa-solid fa-bell-concierge"></i> Orders</a>
+      <a href="menu-management.html" class="admin-nav-item"><i class="fa-solid fa-burger"></i> Menu Management</a>
+      <a href="inventory.html" class="admin-nav-item"><i class="fa-solid fa-boxes-stacked"></i> Inventory Stocks</a>
+      <a href="customers.html" class="admin-nav-item"><i class="fa-solid fa-users"></i> Students Ledger</a>
+      <a href="payments.html" class="admin-nav-item"><i class="fa-solid fa-credit-card"></i> Payments & UPI</a>
+      <a href="offers.html" class="admin-nav-item"><i class="fa-solid fa-ticket"></i> Offers & Coupons</a>
+      <a href="feedback.html" class="admin-nav-item active"><i class="fa-solid fa-star-half-stroke"></i> Ratings & Reviews</a>
+      <a href="reports.html" class="admin-nav-item"><i class="fa-solid fa-file-invoice-dollar"></i> Sales Reports</a>
+      <a href="../index.html" class="admin-nav-item" target="_blank"><i class="fa-solid fa-arrow-up-right-from-square"></i> Student View</a>
+    </nav>
+
+    <div class="admin-sidebar-footer">
+      <div class="admin-profile-pill">
+        <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=80&q=80" alt="Admin" class="admin-avatar">
+        <div style="flex: 1; min-width: 0;">
+          <strong style="font-size: 0.85rem; color: var(--text-primary); display: block;">Dr. V. Sharma</strong>
+          <span style="font-size: 0.72rem; color: var(--text-muted);">Chief Supervisor</span>
+        </div>
+        <button onclick="Auth.logoutAdmin()" style="background: none; border: none; color: var(--accent-ruby); cursor: pointer;" title="Logout">
+          <i class="fa-solid fa-right-from-bracket"></i>
+        </button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Admin Main Viewport -->
+  <main class="admin-main">
+    <header class="admin-topbar">
+      <div class="admin-breadcrumb">
+        <a href="dashboard.html" style="color: var(--text-muted);">Dashboard</a>
+        <i class="fa-solid fa-chevron-right" style="font-size: 0.7rem;"></i>
+        <strong>Student Feedback & Reviews</strong>
+      </div>
+
+      <div class="admin-topbar-actions">
+        <button class="nav-action-btn theme-toggle-btn" title="Toggle Dark/Light Mode">
+          <i class="fa-solid fa-moon"></i>
+        </button>
+      </div>
+    </header>
+
+    <div class="admin-content">
+      <!-- Title -->
+      <div>
+        <h1 style="font-size: 1.85rem; font-weight: 800; color: var(--text-primary); margin: 0 0 0.25rem;">Student Feedback & Ratings</h1>
+        <p style="color: var(--text-secondary); margin: 0; font-size: 0.95rem;">Monitor student satisfaction, taste ratings, hygiene feedback, and kitchen service suggestions.</p>
+      </div>
+
+      <!-- Rating Score Overview Cards -->
+      <div style="display: grid; grid-template-columns: 280px 1fr; gap: 1.5rem; align-items: start;">
+        <!-- Overall Score Card -->
+        <div class="card" style="padding: 2rem; text-align: center;">
+          <span style="font-size: 0.85rem; text-transform: uppercase; color: var(--text-muted); font-weight: 700; letter-spacing: 0.05em;">OVERALL SATISFACTION</span>
+          <div style="font-size: 3.6rem; font-weight: 900; color: var(--primary); line-height: 1; margin: 0.75rem 0 0.5rem;" id="avg-rating-val">4.8</div>
+          <div style="color: #f59e0b; font-size: 1.25rem; margin-bottom: 0.5rem;">
+            <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star-half-stroke"></i>
+          </div>
+          <span style="color: var(--text-muted); font-size: 0.85rem;">Based on 342 verified campus orders</span>
+        </div>
+
+        <!-- Metric Breakdown Pillars -->
+        <div class="card" style="padding: 1.75rem;">
+          <h3 style="font-size: 1.1rem; font-weight: 700; color: var(--text-primary); margin-bottom: 1rem;">Canteen Service Pillars</h3>
+          <div style="display: flex; flex-direction: column; gap: 0.85rem;">
+            <div>
+              <div style="display: flex; justify-content: space-between; font-size: 0.9rem; margin-bottom: 0.35rem;">
+                <strong style="color: var(--text-primary);">Food Taste & Quality</strong>
+                <span class="text-primary font-weight-bold">4.9 / 5.0</span>
+              </div>
+              <div style="height: 6px; background: var(--bg-tertiary); border-radius: 4px; overflow: hidden;">
+                <div style="width: 98%; height: 100%; background: var(--primary);"></div>
+              </div>
+            </div>
+
+            <div>
+              <div style="display: flex; justify-content: space-between; font-size: 0.9rem; margin-bottom: 0.35rem;">
+                <strong style="color: var(--text-primary);">Kitchen Cleanliness & Hygiene</strong>
+                <span class="text-emerald font-weight-bold">4.8 / 5.0</span>
+              </div>
+              <div style="height: 6px; background: var(--bg-tertiary); border-radius: 4px; overflow: hidden;">
+                <div style="width: 96%; height: 100%; background: var(--accent-emerald);"></div>
+              </div>
+            </div>
+
+            <div>
+              <div style="display: flex; justify-content: space-between; font-size: 0.9rem; margin-bottom: 0.35rem;">
+                <strong style="color: var(--text-primary);">Order Preparation Speed</strong>
+                <span style="color: #6366f1; font-weight: 700;">4.6 / 5.0</span>
+              </div>
+              <div style="height: 6px; background: var(--bg-tertiary); border-radius: 4px; overflow: hidden;">
+                <div style="width: 92%; height: 100%; background: #6366f1;"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Feedbacks List -->
+      <div class="card" style="padding: 1.75rem;">
+        <h3 style="font-size: 1.2rem; font-weight: 700; color: var(--text-primary); margin-bottom: 1.25rem;">
+          <i class="fa-solid fa-comments text-primary"></i> Recent Student Reviews
+        </h3>
+
+        <div id="feedback-items-container" style="display: flex; flex-direction: column; gap: 1rem;">
+          <!-- Injected via JS -->
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Scripts -->
+  <script src="../js/data.js"></script>
+  <script src="../js/utils.js"></script>
+  <script src="../js/api.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/main.js"></script>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", async () => {
+      API.init();
+      if (!Auth.requireAdminAuth("../admin-login.html")) return;
+      loadFeedback();
+    });
+
+    async function loadFeedback() {
+      const list = await API.getFeedback();
+      const container = document.getElementById("feedback-items-container");
+
+      if (!list || list.length === 0) {
+        container.innerHTML = `<div style="text-align: center; padding: 2rem; color: var(--text-muted);">No reviews submitted yet.</div>`;
+        return;
+      }
+
+      container.innerHTML = list.map(item => {
+        const starsHtml = Array(5).fill(0).map((_, i) => `
+          <i class="fa-${i < item.rating ? 'solid' : 'regular'} fa-star" style="color: #f59e0b; font-size: 0.85rem;"></i>
+        `).join("");
+
+        return `
+          <div style="padding: 1.25rem; border-radius: var(--radius-md); background: var(--bg-tertiary); border: 1px solid var(--border-color);">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.6rem;">
+              <div style="display: flex; align-items: center; gap: 0.75rem;">
+                <img src="${item.avatar || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=80&q=80'}" style="width: 36px; height: 36px; border-radius: 50%; object-fit: cover;">
+                <div>
+                  <strong style="color: var(--text-primary); font-size: 0.95rem; display: block;">${item.studentName || 'Student'}</strong>
+                  <span style="color: var(--text-muted); font-size: 0.75rem;">${item.department || 'Engineering'} • ${item.date || 'Recent'}</span>
+                </div>
+              </div>
+              <div>${starsHtml}</div>
+            </div>
+            <p style="color: var(--text-secondary); font-size: 0.9rem; margin: 0; line-height: 1.5;">"${item.comment || ''}"</p>
+          </div>
+        `;
+      }).join("");
+    }
+  </script>
+</body>
+</html>

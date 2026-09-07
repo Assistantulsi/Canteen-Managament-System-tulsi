@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Registration — CampusBite Canteen</title>
+  <meta name="description" content="Register for a CampusBite student canteen account. Enjoy instant meal ordering, live cooking updates, and ₹100 welcome bonus wallet credits.">
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/responsive.css">
+
+  <style>
+    .auth-page-wrapper {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 1.1fr 1fr;
+      background: var(--bg-main);
+    }
+
+    .auth-visual-side {
+      background: linear-gradient(135deg, #1e293b, #0f172a);
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 3.5rem;
+      color: #ffffff;
+      overflow: hidden;
+    }
+
+    .auth-visual-side::after {
+      content: '';
+      position: absolute;
+      bottom: -80px;
+      right: -80px;
+      width: 320px;
+      height: 320px;
+      background: radial-gradient(circle, rgba(245, 158, 11, 0.3) 0%, transparent 70%);
+      border-radius: var(--radius-full);
+    }
+
+    .auth-food-decor {
+      margin: auto 0;
+      max-width: 460px;
+    }
+
+    .auth-quote-card {
+      background: rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: var(--radius-lg);
+      padding: 1.75rem;
+      margin-top: 2rem;
+    }
+
+    .auth-form-side {
+      padding: 3rem 4rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      max-width: 620px;
+      margin: 0 auto;
+      width: 100%;
+      overflow-y: auto;
+    }
+
+    .auth-header {
+      margin-bottom: 2rem;
+    }
+
+    .auth-title {
+      font-size: 2rem;
+      font-weight: 800;
+      color: var(--text-primary);
+      margin-bottom: 0.5rem;
+    }
+
+    .auth-subtitle {
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+    }
+
+    .bonus-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: rgba(16, 185, 129, 0.15);
+      color: var(--accent-emerald);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      padding: 0.35rem 0.85rem;
+      border-radius: var(--radius-full);
+      font-size: 0.85rem;
+      font-weight: 700;
+      margin-bottom: 1.25rem;
+    }
+
+    .form-grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+
+    .strength-meter {
+      height: 6px;
+      background: var(--bg-tertiary);
+      border-radius: var(--radius-full);
+      margin-top: 0.5rem;
+      overflow: hidden;
+      display: flex;
+    }
+
+    .strength-bar {
+      height: 100%;
+      width: 0%;
+      transition: width 0.3s ease, background-color 0.3s ease;
+      border-radius: var(--radius-full);
+    }
+
+    .strength-text {
+      font-size: 0.75rem;
+      margin-top: 0.25rem;
+      font-weight: 600;
+      display: block;
+    }
+
+    @media (max-width: 1024px) {
+      .auth-page-wrapper {
+        grid-template-columns: 1fr;
+      }
+      .auth-visual-side {
+        display: none;
+      }
+      .auth-form-side {
+        padding: 2.5rem 1.5rem;
+      }
+      .form-grid-2 {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="auth-page-wrapper">
+    <!-- Visual Showcase Side -->
+    <div class="auth-visual-side">
+      <div class="brand-logo" style="color: #ffffff;">
+        <div class="logo-icon-wrapper" style="background: var(--primary); color: #ffffff;"><i class="fa-solid fa-utensils"></i></div>
+        <div class="brand-name">
+          <span class="brand-title" style="color: #ffffff;">CampusBite</span>
+          <span class="brand-tagline" style="color: #94a3b8;">Smart College Canteen</span>
+        </div>
+      </div>
+
+      <div class="auth-food-decor">
+        <span class="bonus-pill" style="background: rgba(245, 158, 11, 0.2); color: #fcd34d; border-color: rgba(245, 158, 11, 0.4);">
+          <i class="fa-solid fa-gift"></i> Student Exclusive Perks
+        </span>
+        <h2 style="font-size: 2.3rem; font-weight: 800; line-height: 1.25; margin-bottom: 1rem;">
+          Join thousands of students saving 30+ mins every day!
+        </h2>
+        <p style="color: #cbd5e1; font-size: 1.05rem; line-height: 1.6;">
+          Pre-order snacks between lectures, track kitchen tokens live on your phone, and enjoy instant cashless payments with zero queues.
+        </p>
+
+        <div class="auth-quote-card">
+          <div style="display: flex; gap: 0.5rem; color: #f59e0b; margin-bottom: 0.75rem;">
+            <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+          </div>
+          <p style="font-style: italic; color: #f1f5f9; margin-bottom: 0.75rem;">
+            "Signing up took 30 seconds, and the ₹100 wallet credit got me my first hot Masala Dosa and Cold Coffee!"
+          </p>
+          <div style="display: flex; align-items: center; gap: 0.75rem;">
+            <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=80&q=80" style="width: 38px; height: 38px; border-radius: 50%; object-fit: cover;" alt="Student">
+            <div>
+              <strong style="font-size: 0.9rem; display: block; color: #ffffff;">Sneha Kulkarni</strong>
+              <span style="font-size: 0.78rem; color: #94a3b8;">Computer Science, Year 3</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div style="display: flex; justify-content: space-between; font-size: 0.85rem; color: #94a3b8;">
+        <span><i class="fa-solid fa-shield-halved"></i> Campus Security Verified</span>
+        <span>© 2026 CampusBite System</span>
+      </div>
+    </div>
+
+    <!-- Registration Form Side -->
+    <div class="auth-form-side">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+        <a href="index.html" class="btn btn-secondary btn-sm" style="padding: 0.4rem 0.8rem;">
+          <i class="fa-solid fa-arrow-left"></i> Back to Home
+        </a>
+        <button class="nav-action-btn theme-toggle-btn" title="Toggle Theme">
+          <i class="fa-solid fa-moon"></i>
+        </button>
+      </div>
+
+      <div class="auth-header">
+        <span class="bonus-pill">
+          <i class="fa-solid fa-coins"></i> ₹100 Welcome Bonus Wallet Balance
+        </span>
+        <h1 class="auth-title">Create Student Account</h1>
+        <p class="auth-subtitle">Fill in your college details to start ordering food instantly.</p>
+      </div>
+
+      <form id="student-register-form" novalidate>
+        <div class="form-grid-2">
+          <!-- Full Name -->
+          <div class="form-group" id="group-name">
+            <label class="form-label" for="reg-name">Full Name <span class="text-danger">*</span></label>
+            <div class="input-icon-wrapper">
+              <i class="fa-regular fa-user input-icon"></i>
+              <input type="text" id="reg-name" class="form-control" placeholder="e.g. Rahul Sharma" required>
+            </div>
+            <span class="error-text">Please enter your full name</span>
+          </div>
+
+          <!-- Student ID -->
+          <div class="form-group" id="group-id">
+            <label class="form-label" for="reg-id">Student ID / Roll No <span class="text-danger">*</span></label>
+            <div class="input-icon-wrapper">
+              <i class="fa-solid fa-id-card input-icon"></i>
+              <input type="text" id="reg-id" class="form-control" placeholder="e.g. STU1048" required>
+            </div>
+            <span class="error-text">Please enter your Student ID</span>
+          </div>
+        </div>
+
+        <div class="form-grid-2">
+          <!-- College Email -->
+          <div class="form-group" id="group-email">
+            <label class="form-label" for="reg-email">College Email <span class="text-danger">*</span></label>
+            <div class="input-icon-wrapper">
+              <i class="fa-regular fa-envelope input-icon"></i>
+              <input type="email" id="reg-email" class="form-control" placeholder="name@college.edu" required>
+            </div>
+            <span class="error-text">Please enter a valid college email</span>
+          </div>
+
+          <!-- Phone Number -->
+          <div class="form-group" id="group-phone">
+            <label class="form-label" for="reg-phone">Phone Number <span class="text-danger">*</span></label>
+            <div class="input-icon-wrapper">
+              <i class="fa-solid fa-phone input-icon"></i>
+              <input type="tel" id="reg-phone" class="form-control" placeholder="e.g. 9876543210" required>
+            </div>
+            <span class="error-text">Please enter a 10-digit phone number</span>
+          </div>
+        </div>
+
+        <div class="form-grid-2">
+          <!-- Department -->
+          <div class="form-group" id="group-dept">
+            <label class="form-label" for="reg-dept">Department <span class="text-danger">*</span></label>
+            <div class="input-icon-wrapper">
+              <i class="fa-solid fa-graduation-cap input-icon"></i>
+              <select id="reg-dept" class="form-control" required>
+                <option value="">Select Department</option>
+                <option value="Computer Science & Engineering">Computer Science & Engineering</option>
+                <option value="Information Technology">Information Technology</option>
+                <option value="Electronics & Communication">Electronics & Communication</option>
+                <option value="Mechanical Engineering">Mechanical Engineering</option>
+                <option value="Civil Engineering">Civil Engineering</option>
+                <option value="Electrical Engineering">Electrical Engineering</option>
+                <option value="Management Studies">Management Studies</option>
+              </select>
+            </div>
+            <span class="error-text">Please select your department</span>
+          </div>
+
+          <!-- Year / Semester -->
+          <div class="form-group" id="group-year">
+            <label class="form-label" for="reg-year">Year / Semester <span class="text-danger">*</span></label>
+            <div class="input-icon-wrapper">
+              <i class="fa-solid fa-calendar-days input-icon"></i>
+              <select id="reg-year" class="form-control" required>
+                <option value="">Select Year</option>
+                <option value="1st Year (Sem 1-2)">1st Year (Sem 1-2)</option>
+                <option value="2nd Year (Sem 3-4)">2nd Year (Sem 3-4)</option>
+                <option value="3rd Year (Sem 5-6)">3rd Year (Sem 5-6)</option>
+                <option value="4th Year (Sem 7-8)">4th Year (Sem 7-8)</option>
+              </select>
+            </div>
+            <span class="error-text">Please select your academic year</span>
+          </div>
+        </div>
+
+        <!-- Password -->
+        <div class="form-group" id="group-password">
+          <label class="form-label" for="reg-password">Password <span class="text-danger">*</span></label>
+          <div class="input-icon-wrapper">
+            <i class="fa-solid fa-lock input-icon"></i>
+            <input type="password" id="reg-password" class="form-control" placeholder="Create a strong password" required>
+            <button type="button" class="password-toggle" aria-label="Toggle Password">
+              <i class="fa-solid fa-eye"></i>
+            </button>
+          </div>
+          <!-- Strength Meter -->
+          <div class="strength-meter">
+            <div class="strength-bar" id="strength-bar"></div>
+          </div>
+          <span class="strength-text" id="strength-text" style="color: var(--text-muted);">Enter at least 6 characters</span>
+          <span class="error-text">Password must be at least 6 characters</span>
+        </div>
+
+        <!-- Confirm Password -->
+        <div class="form-group" id="group-confirm">
+          <label class="form-label" for="reg-confirm">Confirm Password <span class="text-danger">*</span></label>
+          <div class="input-icon-wrapper">
+            <i class="fa-solid fa-lock-open input-icon"></i>
+            <input type="password" id="reg-confirm" class="form-control" placeholder="Re-enter your password" required>
+            <button type="button" class="password-toggle" aria-label="Toggle Password">
+              <i class="fa-solid fa-eye"></i>
+            </button>
+          </div>
+          <span class="error-text">Passwords do not match</span>
+        </div>
+
+        <!-- Terms and Conditions Checkbox -->
+        <div class="form-group" id="group-terms" style="margin-top: 1rem;">
+          <label class="checkbox-label" style="font-size: 0.88rem; color: var(--text-secondary); cursor: pointer;">
+            <input type="checkbox" id="reg-terms" required>
+            <span>I agree to the <a href="pages/about.html" target="_blank" style="color: var(--primary); font-weight: 600;">Canteen Code of Conduct</a> and Campus Food Policy.</span>
+          </label>
+          <span class="error-text" style="margin-top: 0.25rem;">You must accept the terms to proceed</span>
+        </div>
+
+        <!-- Submit Button -->
+        <button type="submit" class="btn btn-primary btn-block btn-lg" id="reg-submit-btn" style="margin-top: 1.5rem;">
+          <span id="btn-text"><i class="fa-solid fa-user-check"></i> Complete Registration</span>
+          <i class="fa-solid fa-circle-notch fa-spin" id="btn-spinner" style="display: none;"></i>
+        </button>
+      </form>
+
+      <div style="text-align: center; margin-top: 1.75rem; font-size: 0.95rem; color: var(--text-secondary);">
+        Already registered? 
+        <a href="login.html" style="color: var(--primary); font-weight: 700;">Sign In here</a>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/data.js"></script>
+  <script src="js/utils.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/main.js"></script>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      API.init();
+      Auth.setupPasswordToggles();
+
+      const form = document.getElementById("student-register-form");
+      const nameInput = document.getElementById("reg-name");
+      const idInput = document.getElementById("reg-id");
+      const emailInput = document.getElementById("reg-email");
+      const phoneInput = document.getElementById("reg-phone");
+      const deptInput = document.getElementById("reg-dept");
+      const yearInput = document.getElementById("reg-year");
+      const passwordInput = document.getElementById("reg-password");
+      const confirmInput = document.getElementById("reg-confirm");
+      const termsInput = document.getElementById("reg-terms");
+      const submitBtn = document.getElementById("reg-submit-btn");
+      const btnText = document.getElementById("btn-text");
+      const btnSpinner = document.getElementById("btn-spinner");
+
+      const strengthBar = document.getElementById("strength-bar");
+      const strengthText = document.getElementById("strength-text");
+
+      // Password strength checker
+      passwordInput.addEventListener("input", () => {
+        const val = passwordInput.value;
+        if (!val) {
+          strengthBar.style.width = "0%";
+          strengthText.textContent = "Enter at least 6 characters";
+          strengthText.style.color = "var(--text-muted)";
+          return;
+        }
+
+        let score = 0;
+        if (val.length >= 6) score++;
+        if (val.length >= 8) score++;
+        if (/[A-Z]/.test(val) && /[a-z]/.test(val)) score++;
+        if (/\d/.test(val)) score++;
+        if (/[^A-Za-z0-9]/.test(val)) score++;
+
+        if (score <= 2) {
+          strengthBar.style.width = "33%";
+          strengthBar.style.backgroundColor = "var(--accent-ruby)";
+          strengthText.textContent = "Weak Password";
+          strengthText.style.color = "var(--accent-ruby)";
+        } else if (score <= 3) {
+          strengthBar.style.width = "66%";
+          strengthBar.style.backgroundColor = "var(--accent-amber)";
+          strengthText.textContent = "Medium Strength";
+          strengthText.style.color = "var(--accent-amber)";
+        } else {
+          strengthBar.style.width = "100%";
+          strengthBar.style.backgroundColor = "var(--accent-emerald)";
+          strengthText.textContent = "Strong Password! 🔥";
+          strengthText.style.color = "var(--accent-emerald)";
+        }
+      });
+
+      // Form validation & submission
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        let isValid = true;
+        document.querySelectorAll(".form-group").forEach(g => g.classList.remove("has-error"));
+
+        if (!nameInput.value.trim()) {
+          document.getElementById("group-name").classList.add("has-error");
+          isValid = false;
+        }
+
+        if (!idInput.value.trim()) {
+          document.getElementById("group-id").classList.add("has-error");
+          isValid = false;
+        }
+
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(emailInput.value.trim())) {
+          document.getElementById("group-email").classList.add("has-error");
+          isValid = false;
+        }
+
+        if (phoneInput.value.trim().length < 10) {
+          document.getElementById("group-phone").classList.add("has-error");
+          isValid = false;
+        }
+
+        if (!deptInput.value) {
+          document.getElementById("group-dept").classList.add("has-error");
+          isValid = false;
+        }
+
+        if (!yearInput.value) {
+          document.getElementById("group-year").classList.add("has-error");
+          isValid = false;
+        }
+
+        if (passwordInput.value.length < 6) {
+          document.getElementById("group-password").classList.add("has-error");
+          isValid = false;
+        }
+
+        if (confirmInput.value !== passwordInput.value) {
+          document.getElementById("group-confirm").classList.add("has-error");
+          isValid = false;
+        }
+
+        if (!termsInput.checked) {
+          document.getElementById("group-terms").classList.add("has-error");
+          isValid = false;
+        }
+
+        if (!isValid) return;
+
+        // Button Loading State
+        submitBtn.disabled = true;
+        btnText.style.display = "none";
+        btnSpinner.style.display = "inline-block";
+
+        const res = await API.registerUser({
+          fullName: nameInput.value.trim(),
+          studentId: idInput.value.trim().toUpperCase(),
+          email: emailInput.value.trim(),
+          phone: phoneInput.value.trim(),
+          department: deptInput.value,
+          year: yearInput.value,
+          password: passwordInput.value
+        });
+
+        submitBtn.disabled = false;
+        btnText.style.display = "inline-block";
+        btnSpinner.style.display = "none";
+
+        if (res.success) {
+          Utils.showToast("🎉 Account Created! ₹100 Welcome Bonus credited!", "success", 2500);
+          setTimeout(() => {
+            window.location.href = "pages/dashboard.html";
+          }, 900);
+        } else {
+          Utils.showToast(res.message, "error", 4000);
+        }
+      });
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Dashboard — CampusBite</title>
+  <meta name="description" content="Manage your campus canteen meals, check your wallet balance, reorder favorites, and track active tokens.">
+
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <!-- Core Stylesheets -->
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/responsive.css">
+
+  <style>
+    .dashboard-layout {
+      display: grid;
+      grid-template-columns: 260px 1fr;
+      gap: 2rem;
+      align-items: start;
+      padding-top: 2rem;
+      padding-bottom: 5rem;
+    }
+
+    .dashboard-sidebar {
+      background: var(--bg-surface);
+      border-radius: var(--radius-xl);
+      border: 1px solid var(--border-color);
+      padding: 1.5rem;
+      position: sticky;
+      top: 90px;
+    }
+
+    .student-profile-summary {
+      text-align: center;
+      padding-bottom: 1.25rem;
+      margin-bottom: 1.25rem;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .student-avatar {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid var(--primary);
+      margin: 0 auto 0.75rem;
+      display: block;
+    }
+
+    .sidebar-menu-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+
+    .sidebar-menu-link {
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+      padding: 0.75rem 1rem;
+      border-radius: var(--radius-md);
+      color: var(--text-secondary);
+      font-weight: 600;
+      font-size: 0.92rem;
+      transition: all 0.2s ease;
+      text-decoration: none;
+    }
+
+    .sidebar-menu-link:hover {
+      background: var(--bg-tertiary);
+      color: var(--text-primary);
+    }
+
+    .sidebar-menu-link.active {
+      background: var(--primary);
+      color: #ffffff;
+    }
+
+    .specials-banner {
+      background: linear-gradient(135deg, rgba(245, 158, 11, 0.15), rgba(239, 68, 68, 0.08));
+      border: 1px solid rgba(245, 158, 11, 0.3);
+      border-radius: var(--radius-xl);
+      padding: 1.5rem 2rem;
+      margin-bottom: 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+    }
+
+    @media (max-width: 900px) {
+      .dashboard-layout {
+        grid-template-columns: 1fr;
+      }
+      .dashboard-sidebar {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="site-header">
+    <div class="container">
+      <nav class="navbar">
+        <a href="../index.html" class="brand-logo">
+          <div class="logo-icon-wrapper"><i class="fa-solid fa-utensils"></i></div>
+          <div class="brand-name">
+            <span class="brand-title">CampusBite</span>
+            <span class="brand-tagline">College Canteen</span>
+          </div>
+        </a>
+
+        <ul class="nav-links">
+          <li><a href="../index.html" class="nav-link"><i class="fa-solid fa-house"></i> Home</a></li>
+          <li><a href="menu.html" class="nav-link"><i class="fa-solid fa-burger"></i> Menu</a></li>
+          <li><a href="orders.html" class="nav-link"><i class="fa-solid fa-receipt"></i> Orders</a></li>
+          <li><a href="tracking.html" class="nav-link"><i class="fa-solid fa-satellite-dish"></i> Live Track</a></li>
+          <li><a href="about.html" class="nav-link"><i class="fa-solid fa-circle-info"></i> About</a></li>
+          <li><a href="contact.html" class="nav-link"><i class="fa-solid fa-envelope"></i> Contact</a></li>
+        </ul>
+
+        <div class="nav-actions">
+          <button class="nav-action-btn theme-toggle-btn" title="Toggle Dark/Light Mode" aria-label="Toggle Theme">
+            <i class="fa-solid fa-moon"></i>
+          </button>
+
+          <a href="cart.html" class="nav-action-btn" title="View Cart" aria-label="Shopping Cart">
+            <i class="fa-solid fa-cart-shopping"></i>
+            <span class="badge-counter cart-count-badge" style="display: none;">0</span>
+          </a>
+
+          <div class="nav-user-container"></div>
+
+          <button class="hamburger-btn" aria-label="Open Navigation Menu">
+            <i class="fa-solid fa-bars"></i>
+          </button>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Mobile Drawer -->
+  <div class="drawer-backdrop"></div>
+  <aside class="mobile-drawer" aria-label="Mobile Navigation">
+    <div class="drawer-header">
+      <div class="brand-logo">
+        <div class="logo-icon-wrapper"><i class="fa-solid fa-utensils"></i></div>
+        <span class="brand-title">CampusBite</span>
+      </div>
+      <button class="drawer-close-btn" aria-label="Close Menu">&times;</button>
+    </div>
+    <div class="drawer-body">
+      <ul class="drawer-links">
+        <li><a href="../index.html" class="drawer-link"><i class="fa-solid fa-house"></i> Home</a></li>
+        <li><a href="menu.html" class="drawer-link"><i class="fa-solid fa-burger"></i> Digital Menu</a></li>
+        <li><a href="cart.html" class="drawer-link"><i class="fa-solid fa-cart-shopping"></i> My Cart</a></li>
+        <li><a href="orders.html" class="drawer-link"><i class="fa-solid fa-receipt"></i> Order History</a></li>
+        <li><a href="tracking.html" class="drawer-link"><i class="fa-solid fa-satellite-dish"></i> Live Tracking</a></li>
+        <li><a href="wallet.html" class="drawer-link"><i class="fa-solid fa-wallet"></i> Campus Wallet</a></li>
+        <li><a href="favorites.html" class="drawer-link"><i class="fa-solid fa-heart"></i> Favorites</a></li>
+        <li><a href="profile.html" class="drawer-link"><i class="fa-solid fa-user"></i> My Profile</a></li>
+        <li><a href="notifications.html" class="drawer-link"><i class="fa-solid fa-bell"></i> Notifications</a></li>
+        <li><a href="about.html" class="drawer-link"><i class="fa-solid fa-circle-info"></i> About Canteen</a></li>
+        <li><a href="contact.html" class="drawer-link"><i class="fa-solid fa-envelope"></i> Help & Contact</a></li>
+        <li><a href="javascript:void(0)" onclick="Auth.logoutStudent()" class="drawer-link text-danger"><i class="fa-solid fa-right-from-bracket"></i> Logout</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <!-- Dashboard Container with Sidebar -->
+  <div class="container">
+    <div class="dashboard-layout">
+      <!-- Left Desktop Sidebar Navigation -->
+      <aside class="dashboard-sidebar">
+        <div class="student-profile-summary">
+          <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&q=80" alt="Student" id="sidebar-avatar" class="student-avatar">
+          <h3 style="font-size: 1.1rem; font-weight: 700; color: var(--text-primary); margin: 0;" id="sidebar-name">Student Account</h3>
+          <span style="font-size: 0.8rem; color: var(--text-muted); display: block;" id="sidebar-id">ID: STU1024</span>
+          <span class="badge badge-success" style="margin-top: 0.5rem;" id="sidebar-wallet-pill">Wallet: ₹350.00</span>
+        </div>
+
+        <ul class="sidebar-menu-list">
+          <li><a href="dashboard.html" class="sidebar-menu-link active"><i class="fa-solid fa-gauge"></i> Dashboard</a></li>
+          <li><a href="menu.html" class="sidebar-menu-link"><i class="fa-solid fa-burger"></i> Digital Menu</a></li>
+          <li><a href="cart.html" class="sidebar-menu-link"><i class="fa-solid fa-cart-shopping"></i> My Cart</a></li>
+          <li><a href="orders.html" class="sidebar-menu-link"><i class="fa-solid fa-receipt"></i> My Orders</a></li>
+          <li><a href="tracking.html" class="sidebar-menu-link"><i class="fa-solid fa-satellite-dish"></i> Order Tracking</a></li>
+          <li><a href="favorites.html" class="sidebar-menu-link"><i class="fa-solid fa-heart"></i> Favorites</a></li>
+          <li><a href="wallet.html" class="sidebar-menu-link"><i class="fa-solid fa-wallet"></i> Campus Wallet</a></li>
+          <li><a href="notifications.html" class="sidebar-menu-link"><i class="fa-solid fa-bell"></i> Notifications</a></li>
+          <li><a href="profile.html" class="sidebar-menu-link"><i class="fa-solid fa-user-gear"></i> Profile & Settings</a></li>
+          <li style="margin-top: 0.75rem; border-top: 1px solid var(--border-color); padding-top: 0.75rem;">
+            <a href="javascript:void(0)" onclick="Auth.logoutStudent()" class="sidebar-menu-link text-danger">
+              <i class="fa-solid fa-right-from-bracket"></i> Logout
+            </a>
+          </li>
+        </ul>
+      </aside>
+
+      <!-- Right Main Content Area -->
+      <main>
+        <!-- Welcome Message Header -->
+        <div style="margin-bottom: 2rem;">
+          <h1 style="font-size: 2.1rem; font-weight: 800; color: var(--text-primary); margin-bottom: 0.25rem;">
+            Welcome back, <span id="dash-greeting-name" class="text-primary">Student</span>! 🥪
+          </h1>
+          <p style="color: var(--text-secondary); margin: 0;">Here is your campus canteen overview, quick orders, and wallet balance.</p>
+        </div>
+
+        <!-- 4 Summary Metric Cards -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 1.25rem; margin-bottom: 2rem;">
+          <div class="card" style="padding: 1.25rem; display: flex; align-items: center; gap: 1rem;">
+            <div style="width: 48px; height: 48px; border-radius: var(--radius-md); background: rgba(245, 158, 11, 0.15); color: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 1.3rem;">
+              <i class="fa-solid fa-wallet"></i>
+            </div>
+            <div>
+              <span style="font-size: 0.78rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase;">WALLET BALANCE</span>
+              <strong style="font-size: 1.45rem; color: var(--text-primary); display: block;" id="card-wallet-val">₹350.00</strong>
+            </div>
+          </div>
+
+          <div class="card" style="padding: 1.25rem; display: flex; align-items: center; gap: 1rem;">
+            <div style="width: 48px; height: 48px; border-radius: var(--radius-md); background: rgba(16, 185, 129, 0.15); color: var(--accent-emerald); display: flex; align-items: center; justify-content: center; font-size: 1.3rem;">
+              <i class="fa-solid fa-receipt"></i>
+            </div>
+            <div>
+              <span style="font-size: 0.78rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase;">TOTAL ORDERS</span>
+              <strong style="font-size: 1.45rem; color: var(--text-primary); display: block;" id="card-orders-val">0</strong>
+            </div>
+          </div>
+
+          <div class="card" style="padding: 1.25rem; display: flex; align-items: center; gap: 1rem;">
+            <div style="width: 48px; height: 48px; border-radius: var(--radius-md); background: rgba(99, 102, 241, 0.15); color: #6366f1; display: flex; align-items: center; justify-content: center; font-size: 1.3rem;">
+              <i class="fa-solid fa-fire-burner"></i>
+            </div>
+            <div>
+              <span style="font-size: 0.78rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase;">PENDING ORDERS</span>
+              <strong style="font-size: 1.45rem; color: #6366f1; display: block;" id="card-pending-val">0</strong>
+            </div>
+          </div>
+
+          <div class="card" style="padding: 1.25rem; display: flex; align-items: center; gap: 1rem;">
+            <div style="width: 48px; height: 48px; border-radius: var(--radius-md); background: rgba(16, 185, 129, 0.15); color: var(--accent-emerald); display: flex; align-items: center; justify-content: center; font-size: 1.3rem;">
+              <i class="fa-solid fa-circle-check"></i>
+            </div>
+            <div>
+              <span style="font-size: 0.78rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase;">COMPLETED</span>
+              <strong style="font-size: 1.45rem; color: var(--accent-emerald); display: block;" id="card-completed-val">0</strong>
+            </div>
+          </div>
+        </div>
+
+        <!-- Today's Special Banner -->
+        <div class="specials-banner">
+          <div>
+            <span class="badge badge-primary" style="margin-bottom: 0.5rem;"><i class="fa-solid fa-star"></i> Today's Kitchen Special</span>
+            <h2 style="font-size: 1.6rem; font-weight: 800; color: var(--text-primary); margin: 0.25rem 0;">
+              Fresh Paneer Roll with Mint Dip
+            </h2>
+            <p style="color: var(--text-secondary); margin: 0; font-size: 0.95rem;">
+              Fresh marinated cottage cheese cubes with bell peppers & tandoori spices wrapped in flaky paratha.
+            </p>
+          </div>
+          <div style="display: flex; align-items: center; gap: 1rem;">
+            <span style="font-size: 1.8rem; font-weight: 900; color: var(--primary);">₹80</span>
+            <button class="btn btn-primary" onclick="quickOrderSpecial()">
+              <i class="fa-solid fa-cart-plus"></i> Quick Order
+            </button>
+          </div>
+        </div>
+
+        <!-- Recommended Food Cards -->
+        <div style="margin-bottom: 2.5rem;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+            <h2 style="font-size: 1.35rem; font-weight: 800; color: var(--text-primary); margin: 0;">
+              <i class="fa-solid fa-thumbs-up text-primary"></i> Recommended For You
+            </h2>
+            <a href="menu.html" class="btn btn-secondary btn-sm">Full Menu &rarr;</a>
+          </div>
+
+          <div id="recommended-foods-grid" class="food-grid" style="grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));">
+            <!-- Injected via JS -->
+          </div>
+        </div>
+
+        <!-- Recent Orders Table -->
+        <div class="card" style="padding: 1.5rem;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+            <h2 style="font-size: 1.25rem; font-weight: 800; color: var(--text-primary); margin: 0;">
+              <i class="fa-solid fa-clock-rotate-left text-primary"></i> Recent Orders
+            </h2>
+            <a href="orders.html" style="font-size: 0.88rem; font-weight: 700; color: var(--primary);">View All &rarr;</a>
+          </div>
+
+          <div style="overflow-x: auto;">
+            <table class="table" style="width: 100%;">
+              <thead>
+                <tr>
+                  <th>Token</th>
+                  <th>Order ID</th>
+                  <th>Dishes</th>
+                  <th>Total</th>
+                  <th>Status</th>
+                  <th style="text-align: right;">Action</th>
+                </tr>
+              </thead>
+              <tbody id="dash-recent-orders">
+                <!-- Injected via JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <!-- Mobile Bottom Navigation Bar -->
+  <nav class="mobile-bottom-bar" aria-label="Quick Mobile Navigation">
+    <a href="../index.html" class="bottom-bar-item">
+      <i class="fa-solid fa-house"></i>
+      <span>Home</span>
+    </a>
+    <a href="menu.html" class="bottom-bar-item">
+      <i class="fa-solid fa-burger"></i>
+      <span>Menu</span>
+    </a>
+    <a href="cart.html" class="bottom-bar-item">
+      <i class="fa-solid fa-cart-shopping"></i>
+      <span>Cart</span>
+      <span class="bottom-badge cart-count-badge" style="display: none;">0</span>
+    </a>
+    <a href="orders.html" class="bottom-bar-item">
+      <i class="fa-solid fa-receipt"></i>
+      <span>Orders</span>
+    </a>
+    <a href="dashboard.html" class="bottom-bar-item active">
+      <i class="fa-solid fa-user"></i>
+      <span>Account</span>
+    </a>
+  </nav>
+
+  <!-- Core Scripts -->
+  <script src="../js/data.js"></script>
+  <script src="../js/utils.js"></script>
+  <script src="../js/api.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/main.js"></script>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", async () => {
+      API.init();
+      if (!Auth.requireStudentAuth("../login.html")) return;
+
+      const user = API.getCurrentUser() || { name: "Aditya Verma", id: "STU1024", walletBalance: 350 };
+      const firstName = (user.name || "Student").split(" ")[0];
+
+      // Greetings & Sidebar
+      document.getElementById("dash-greeting-name").textContent = firstName;
+      document.getElementById("sidebar-name").textContent = user.name || "Student";
+      document.getElementById("sidebar-id").textContent = `ID: ${user.id || 'STU1024'}`;
+      document.getElementById("sidebar-wallet-pill").textContent = `Wallet: ₹${Number(user.walletBalance || 0).toFixed(2)}`;
+      document.getElementById("card-wallet-val").textContent = `₹${Number(user.walletBalance || 0).toFixed(2)}`;
+
+      if (user.avatar) {
+        document.getElementById("sidebar-avatar").src = user.avatar;
+      }
+
+      // Orders Summary
+      const ordersRes = await API.getOrders();
+      const orders = ordersRes.data || [];
+
+      document.getElementById("card-orders-val").textContent = orders.length;
+      document.getElementById("card-pending-val").textContent = orders.filter(o => ["Pending", "Confirmed", "Preparing"].includes(o.orderStatus)).length;
+      document.getElementById("card-completed-val").textContent = orders.filter(o => o.orderStatus === "Completed").length;
+
+      // Render Recent Orders
+      const tbody = document.getElementById("dash-recent-orders");
+      const recent = orders.slice(0, 5);
+
+      if (recent.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; padding: 2rem; color: var(--text-muted);">No orders placed yet.</td></tr>`;
+      } else {
+        tbody.innerHTML = recent.map(o => {
+          const isLive = ["Pending", "Confirmed", "Preparing", "Ready"].includes(o.orderStatus);
+          const badgeClass = o.orderStatus === "Completed" ? "badge-success" : o.orderStatus === "Ready" ? "badge-warning" : "badge-info";
+
+          return `
+            <tr style="border-bottom: 1px solid var(--border-color);">
+              <td><strong style="color: var(--primary); font-size: 1.05rem;">${o.tokenNumber || '#A-01'}</strong></td>
+              <td style="font-family: monospace; font-size: 0.85rem; color: var(--text-muted);">${o.orderId}</td>
+              <td style="font-size: 0.88rem; color: var(--text-secondary); max-width: 200px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                ${(o.items || []).map(i => `${i.quantity}x ${i.name}`).join(", ")}
+              </td>
+              <td><strong style="color: var(--text-primary);">₹${o.totalAmount}</strong></td>
+              <td><span class="badge ${badgeClass}">${o.orderStatus}</span></td>
+              <td style="text-align: right;">
+                ${isLive ? `
+                  <a href="tracking.html?orderId=${o.orderId}" class="btn btn-primary btn-sm">
+                    <i class="fa-solid fa-satellite-dish"></i> Track
+                  </a>
+                ` : `
+                  <button class="btn btn-secondary btn-sm" onclick="reorderFast('${o.orderId}')">
+                    <i class="fa-solid fa-rotate-right"></i>
+                  </button>
+                `}
+              </td>
+            </tr>
+          `;
+        }).join("");
+      }
+
+      // Render Recommended Foods
+      const menuRes = await API.getMenu();
+      if (menuRes.success) {
+        const topRecs = menuRes.data.slice(0, 3);
+        const recGrid = document.getElementById("recommended-foods-grid");
+        recGrid.innerHTML = topRecs.map(food => `
+          <div class="food-card" onclick="App.openFoodDetails('${food.id}')">
+            <div class="food-card-img-wrapper">
+              <img src="${food.image}" alt="${food.name}" class="food-card-img">
+              <div class="card-top-badges">
+                <span class="diet-tag ${food.isVeg ? 'diet-veg' : 'diet-nonveg'}">
+                  <i class="fa-solid fa-circle"></i> ${food.isVeg ? 'Veg' : 'Non-Veg'}
+                </span>
+              </div>
+              <span class="card-prep-time"><i class="fa-regular fa-clock"></i> ${food.prepTime}</span>
+            </div>
+            <div class="food-card-body">
+              <div class="food-card-meta">
+                <span class="food-category-label">${food.category}</span>
+                <span class="food-card-rating"><i class="fa-solid fa-star"></i> ${food.rating}</span>
+              </div>
+              <h3 class="food-card-title">${food.name}</h3>
+              <p class="food-card-desc">${food.description}</p>
+              <div class="food-card-footer">
+                <span class="food-price">₹${food.price}</span>
+                <button class="btn btn-primary btn-sm" onclick="event.stopPropagation(); addQuickFood('${food.id}')">
+                  <i class="fa-solid fa-cart-plus"></i> Add
+                </button>
+              </div>
+            </div>
+          </div>
+        `).join("");
+      }
+    });
+
+    async function quickOrderSpecial() {
+      const res = await API.getMenu();
+      if (res.success) {
+        const paneer = res.data.find(f => f.name.toLowerCase().includes("paneer roll")) || res.data[0];
+        API.addToCart({
+          id: paneer.id,
+          name: paneer.name,
+          price: paneer.price,
+          image: paneer.image,
+          isVeg: paneer.isVeg
+        }, 1);
+        Utils.showToast("Today's Special added to Cart Tray! 🌯", "success", 2000);
+        App.updateCartBadges();
+        setTimeout(() => window.location.href = "cart.html", 600);
+      }
+    }
+
+    async function addQuickFood(foodId) {
+      const res = await API.getFoodById(foodId);
+      if (res.success) {
+        API.addToCart({
+          id: res.data.id,
+          name: res.data.name,
+          price: res.data.price,
+          image: res.data.image,
+          isVeg: res.data.isVeg
+        }, 1);
+        Utils.showToast(`Added ${res.data.name} to Cart Tray! 🛒`, "success", 1800);
+        App.updateCartBadges();
+      }
+    }
+
+    async function reorderFast(orderId) {
+      const res = await API.getOrderById(orderId);
+      if (res.success && res.data && res.data.items) {
+        res.data.items.forEach(i => {
+          API.addToCart({ id: i.id, name: i.name, price: i.price, image: i.image, isVeg: i.isVeg }, i.quantity || 1);
+        });
+        Utils.showToast("Dishes added to cart tray!", "success");
+        setTimeout(() => window.location.href = "cart.html", 500);
+      }
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Express Checkout — CampusBite Canteen</title>
+  <meta name="description" content="Select your pickup counter, choose payment via Student Wallet, UPI QR or Cash, and generate your live kitchen token.">
+
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <!-- Core Stylesheets -->
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/responsive.css">
+
+  <style>
+    .checkout-layout {
+      display: grid;
+      grid-template-columns: 1.25fr 1fr;
+      gap: 2rem;
+      align-items: start;
+    }
+
+    .payment-option-card {
+      border: 2px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 1rem 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      background: var(--bg-surface);
+      margin-bottom: 0.75rem;
+    }
+
+    .payment-option-card:hover {
+      border-color: var(--primary);
+    }
+
+    .payment-option-card.selected {
+      border-color: var(--primary);
+      background: rgba(245, 158, 11, 0.06);
+    }
+
+    .payment-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+      background: var(--bg-tertiary);
+    }
+
+    .confirmation-card {
+      background: var(--bg-surface);
+      border-radius: var(--radius-xl);
+      border: 1px solid var(--border-color);
+      padding: 3rem 2rem;
+      text-align: center;
+      max-width: 580px;
+      margin: 2rem auto;
+      box-shadow: var(--shadow-xl);
+    }
+
+    .token-display-box {
+      background: linear-gradient(135deg, rgba(245, 158, 11, 0.15), rgba(239, 68, 68, 0.1));
+      border: 2px dashed var(--primary);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+      margin: 1.75rem 0;
+    }
+
+    @media (max-width: 900px) {
+      .checkout-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="site-header">
+    <div class="container">
+      <nav class="navbar">
+        <a href="../index.html" class="brand-logo">
+          <div class="logo-icon-wrapper"><i class="fa-solid fa-utensils"></i></div>
+          <div class="brand-name">
+            <span class="brand-title">CampusBite</span>
+            <span class="brand-tagline">College Canteen</span>
+          </div>
+        </a>
+
+        <ul class="nav-links">
+          <li><a href="../index.html" class="nav-link"><i class="fa-solid fa-house"></i> Home</a></li>
+          <li><a href="menu.html" class="nav-link"><i class="fa-solid fa-burger"></i> Menu</a></li>
+          <li><a href="orders.html" class="nav-link"><i class="fa-solid fa-receipt"></i> Orders</a></li>
+          <li><a href="tracking.html" class="nav-link"><i class="fa-solid fa-satellite-dish"></i> Live Track</a></li>
+          <li><a href="about.html" class="nav-link"><i class="fa-solid fa-circle-info"></i> About</a></li>
+          <li><a href="contact.html" class="nav-link"><i class="fa-solid fa-envelope"></i> Contact</a></li>
+        </ul>
+
+        <div class="nav-actions">
+          <button class="nav-action-btn theme-toggle-btn" title="Toggle Dark/Light Mode" aria-label="Toggle Theme">
+            <i class="fa-solid fa-moon"></i>
+          </button>
+
+          <a href="cart.html" class="nav-action-btn" title="View Cart" aria-label="Shopping Cart">
+            <i class="fa-solid fa-cart-shopping"></i>
+            <span class="badge-counter cart-count-badge" style="display: none;">0</span>
+          </a>
+
+          <div class="nav-user-container"></div>
+
+          <button class="hamburger-btn" aria-label="Open Navigation Menu">
+            <i class="fa-solid fa-bars"></i>
+          </button>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Mobile Drawer -->
+  <div class="drawer-backdrop"></div>
+  <aside class="mobile-drawer" aria-label="Mobile Navigation">
+    <div class="drawer-header">
+      <div class="brand-logo">
+        <div class="logo-icon-wrapper"><i class="fa-solid fa-utensils"></i></div>
+        <span class="brand-title">CampusBite</span>
+      </div>
+      <button class="drawer-close-btn" aria-label="Close Menu">&times;</button>
+    </div>
+    <div class="drawer-body">
+      <ul class="drawer-links">
+        <li><a href="../index.html" class="drawer-link"><i class="fa-solid fa-house"></i> Home</a></li>
+        <li><a href="menu.html" class="drawer-link"><i class="fa-solid fa-burger"></i> Digital Menu</a></li>
+        <li><a href="cart.html" class="drawer-link"><i class="fa-solid fa-cart-shopping"></i> My Cart</a></li>
+        <li><a href="orders.html" class="drawer-link"><i class="fa-solid fa-receipt"></i> Order History</a></li>
+        <li><a href="tracking.html" class="drawer-link"><i class="fa-solid fa-satellite-dish"></i> Live Tracking</a></li>
+        <li><a href="wallet.html" class="drawer-link"><i class="fa-solid fa-wallet"></i> Campus Wallet</a></li>
+        <li><a href="favorites.html" class="drawer-link"><i class="fa-solid fa-heart"></i> Favorites</a></li>
+        <li><a href="profile.html" class="drawer-link"><i class="fa-solid fa-user"></i> My Profile</a></li>
+        <li><a href="about.html" class="drawer-link"><i class="fa-solid fa-circle-info"></i> About Canteen</a></li>
+        <li><a href="contact.html" class="drawer-link"><i class="fa-solid fa-envelope"></i> Help & Contact</a></li>
+        <li><a href="../admin-login.html" class="drawer-link text-primary"><i class="fa-solid fa-user-shield"></i> Staff Portal</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <!-- Page Banner -->
+  <section class="page-banner" style="padding: 2rem 0 1.25rem; background: var(--bg-surface); border-bottom: 1px solid var(--border-color);">
+    <div class="container">
+      <span class="badge badge-primary" style="margin-bottom: 0.5rem;"><i class="fa-solid fa-shield-halved"></i> Fast & Secure Checkout</span>
+      <h1 style="font-size: 2.1rem; font-weight: 800; color: var(--text-primary); margin: 0.25rem 0;">Order Checkout</h1>
+      <p style="color: var(--text-secondary); margin: 0;">Specify pickup counter and choose your preferred campus payment method.</p>
+    </div>
+  </section>
+
+  <!-- Main Content Container -->
+  <main class="container" style="padding-top: 2rem; padding-bottom: 5rem;">
+    <!-- Confirmation View (Shown when order placed) -->
+    <div id="confirmation-view" style="display: none;"></div>
+
+    <!-- Active Checkout Form Layout -->
+    <div id="checkout-main-content">
+      <div id="empty-cart-warning" class="cart-empty-state" style="display: none; text-align: center; padding: 4rem 1rem;">
+        <div class="cart-empty-icon" style="font-size: 4rem; color: var(--text-muted); margin-bottom: 1rem;"><i class="fa-solid fa-cart-shopping"></i></div>
+        <h2 style="color: var(--text-primary);">Your Cart is Currently Empty</h2>
+        <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">Add some mouth-watering food before proceeding to checkout.</p>
+        <a href="menu.html" class="btn btn-primary"><i class="fa-solid fa-burger"></i> Browse Digital Menu</a>
+      </div>
+
+      <div id="checkout-form-container" class="checkout-layout">
+        <!-- Left: Student Info, Pickup & Payment -->
+        <div>
+          <!-- Student Pickup Information -->
+          <div class="card" style="margin-bottom: 1.5rem; padding: 1.75rem;">
+            <h2 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 1.25rem; display: flex; align-items: center; gap: 0.5rem; color: var(--text-primary);">
+              <i class="fa-solid fa-id-badge text-primary"></i> 1. Student Pickup Details
+            </h2>
+
+            <div class="form-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+              <div class="form-group">
+                <label class="form-label">Student Name</label>
+                <input type="text" id="chk-name" class="form-control" placeholder="Student Name" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Student ID / Roll No</label>
+                <input type="text" id="chk-id" class="form-control" placeholder="e.g. STU1024" required>
+              </div>
+            </div>
+
+            <div class="form-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+              <div class="form-group">
+                <label class="form-label">Contact Phone</label>
+                <input type="tel" id="chk-phone" class="form-control" placeholder="10-digit number" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Pickup Time Slot</label>
+                <select id="chk-slot" class="form-control">
+                  <option value="Immediate (Next 8-12 mins)">Immediate (Next 8-12 mins)</option>
+                  <option value="Short Break (11:15 AM)">Short Break (11:15 AM)</option>
+                  <option value="Lunch Break (1:15 PM)">Lunch Break (1:15 PM)</option>
+                  <option value="Afternoon Recess (3:30 PM)">Afternoon Recess (3:30 PM)</option>
+                  <option value="Evening Snack (5:00 PM)">Evening Snack (5:00 PM)</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-group" style="margin-top: 1rem;">
+              <label class="form-label">Select Canteen Pickup Counter</label>
+              <select id="chk-counter" class="form-control">
+                <option value="Counter 1 (Snacks & Beverages)">Counter 1 (Snacks, Samosas & Hot Beverages)</option>
+                <option value="Counter 2 (Main Meals & Dosas)">Counter 2 (Thalis, Dosas & Lunch Meals)</option>
+                <option value="Counter 3 (Fast Food & Shakes)">Counter 3 (Burgers, Momos & Shakes)</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Payment Options -->
+          <div class="card" style="padding: 1.75rem;">
+            <h2 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 1.25rem; display: flex; align-items: center; gap: 0.5rem; color: var(--text-primary);">
+              <i class="fa-solid fa-wallet text-primary"></i> 2. Choose Payment Method
+            </h2>
+
+            <!-- Campus Wallet Option -->
+            <div class="payment-option-card selected" id="opt-wallet" onclick="selectPayment('Campus Wallet')">
+              <div class="payment-icon text-amber" style="background: rgba(245, 158, 11, 0.15);">
+                <i class="fa-solid fa-credit-card"></i>
+              </div>
+              <div style="flex: 1;">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                  <strong style="color: var(--text-primary);">College Canteen Wallet</strong>
+                  <span class="badge badge-success" id="wallet-balance-pill">Balance: ₹350.00</span>
+                </div>
+                <p style="margin: 0.25rem 0 0; font-size: 0.85rem; color: var(--text-secondary);">
+                  Fastest 1-click payment with automatic student token generation.
+                </p>
+              </div>
+              <input type="radio" name="paymentMethod" value="Campus Wallet" checked>
+            </div>
+
+            <!-- UPI QR Code Option -->
+            <div class="payment-option-card" id="opt-upi" onclick="selectPayment('UPI QR Code')">
+              <div class="payment-icon text-emerald" style="background: rgba(16, 185, 129, 0.15);">
+                <i class="fa-solid fa-qrcode"></i>
+              </div>
+              <div style="flex: 1;">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                  <strong style="color: var(--text-primary);">Instant UPI (GPay, PhonePe, Paytm)</strong>
+                  <span class="badge badge-info">Zero Fee</span>
+                </div>
+                <p style="margin: 0.25rem 0 0; font-size: 0.85rem; color: var(--text-secondary);">
+                  Scan dynamic campus UPI QR code and verify instantly.
+                </p>
+              </div>
+              <input type="radio" name="paymentMethod" value="UPI QR Code">
+            </div>
+
+            <!-- Cash at Counter Option -->
+            <div class="payment-option-card" id="opt-cash" onclick="selectPayment('Cash at Counter')">
+              <div class="payment-icon text-primary" style="background: rgba(99, 102, 241, 0.15);">
+                <i class="fa-solid fa-money-bill-wave"></i>
+              </div>
+              <div style="flex: 1;">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                  <strong style="color: var(--text-primary);">Cash at Counter</strong>
+                  <span class="badge" style="background: var(--bg-tertiary);">Pay on Pickup</span>
+                </div>
+                <p style="margin: 0.25rem 0 0; font-size: 0.85rem; color: var(--text-secondary);">
+                  Pay physical cash at the collection counter when receiving meal.
+                </p>
+              </div>
+              <input type="radio" name="paymentMethod" value="Cash at Counter">
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Order Items & Pricing Summary -->
+        <div>
+          <div class="cart-summary-card">
+            <h2 class="summary-title" style="font-size: 1.25rem;"><i class="fa-solid fa-receipt text-primary"></i> Order Breakdown</h2>
+
+            <!-- Items List -->
+            <div id="checkout-items-list" style="max-height: 240px; overflow-y: auto; margin-bottom: 1.25rem; padding-right: 0.25rem;">
+              <!-- Populated via JS -->
+            </div>
+
+            <!-- Coupon Input -->
+            <div class="summary-coupon" style="margin-bottom: 1.5rem;">
+              <div class="coupon-input-group">
+                <i class="fa-solid fa-tag coupon-icon"></i>
+                <input type="text" id="chk-coupon-code" class="coupon-input" placeholder="Coupon Code (CANTEEN20)" value="CANTEEN20">
+                <button type="button" class="btn btn-secondary btn-sm" id="btn-apply-coupon" onclick="applyCouponCode()">Apply</button>
+              </div>
+              <span id="coupon-message" style="display: block; font-size: 0.78rem; margin-top: 0.35rem;"></span>
+            </div>
+
+            <!-- Price Breakdown -->
+            <div class="summary-breakdown">
+              <div class="summary-row">
+                <span>Subtotal (<span id="summary-items-count">0</span> items)</span>
+                <span id="summary-subtotal">₹0</span>
+              </div>
+              <div class="summary-row" id="row-discount" style="display: none; color: var(--accent-emerald);">
+                <span>Coupon Discount (<span id="lbl-coupon-name"></span>)</span>
+                <span id="summary-discount">-₹0</span>
+              </div>
+              <div class="summary-row">
+                <span>Eco Tray & Service Fee</span>
+                <span>₹5</span>
+              </div>
+              <div class="summary-row">
+                <span>Campus Student GST</span>
+                <span class="text-emerald">₹0 (Waived)</span>
+              </div>
+              <div class="summary-divider"></div>
+              <div class="summary-row summary-grand-total">
+                <span>Total Amount</span>
+                <span id="summary-grand-total">₹0</span>
+              </div>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="summary-actions" style="margin-top: 1.5rem;">
+              <button class="btn btn-primary btn-lg btn-block" id="btn-place-order" onclick="submitOrder()">
+                <span id="place-order-text"><i class="fa-solid fa-bag-shopping"></i> Confirm & Place Order</span>
+                <i class="fa-solid fa-circle-notch fa-spin" id="place-order-spinner" style="display: none;"></i>
+              </button>
+              <a href="cart.html" class="btn btn-secondary btn-block" style="margin-top: 0.75rem;">
+                <i class="fa-solid fa-arrow-left"></i> Edit Cart Tray
+              </a>
+            </div>
+
+            <div class="summary-perks" style="margin-top: 1.5rem;">
+              <div class="perk-item">
+                <i class="fa-solid fa-shield-check text-emerald"></i>
+                <span>Order tokens directly linked to your student ID</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- UPI QR Simulation Modal -->
+  <div class="modal-backdrop" id="upi-modal" style="display: none;">
+    <div class="modal-dialog" style="max-width: 400px; text-align: center;">
+      <div class="modal-header">
+        <h3 class="modal-title"><i class="fa-solid fa-qrcode text-emerald"></i> Scan Campus UPI</h3>
+        <button class="modal-close" onclick="closeUpiModal()">&times;</button>
+      </div>
+      <div class="modal-body" style="padding: 1.5rem;">
+        <div style="background: #ffffff; padding: 1rem; border-radius: var(--radius-lg); display: inline-block; box-shadow: var(--shadow-md); margin-bottom: 1rem;">
+          <!-- Simulated High Res QR -->
+          <img src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=upi://pay?pa=campusbite@canteen&pn=CampusBite%20Canteen&am=100&cu=INR" alt="UPI QR" id="upi-qr-img" style="display: block; width: 180px; height: 180px;">
+        </div>
+        <p style="font-size: 0.95rem; font-weight: 700; color: var(--text-primary); margin: 0 0 0.25rem;">Amount: <span id="upi-modal-amount" class="text-primary">₹0</span></p>
+        <p style="font-size: 0.82rem; color: var(--text-secondary); margin: 0 0 1rem;">Accepts Google Pay, PhonePe, Paytm, BHIM UPI</p>
+        <div style="background: rgba(16, 185, 129, 0.1); border-radius: var(--radius-md); padding: 0.75rem; font-size: 0.82rem; color: var(--accent-emerald);">
+          <i class="fa-solid fa-circle-notch fa-spin"></i> Awaiting automatic payment confirmation...
+        </div>
+      </div>
+      <div class="modal-footer" style="display: flex; gap: 0.75rem;">
+        <button class="btn btn-secondary btn-block btn-sm" onclick="closeUpiModal()">Cancel</button>
+        <button class="btn btn-primary btn-block btn-sm" onclick="completeUpiPayment()"><i class="fa-solid fa-check"></i> Simulate Payment Success</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="../js/data.js"></script>
+  <script src="../js/utils.js"></script>
+  <script src="../js/api.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/main.js"></script>
+
+  <script>
+    let currentPaymentMethod = "Campus Wallet";
+    let activeCoupon = null;
+    let orderDiscount = 0;
+    let packagingFee = 5;
+
+    document.addEventListener("DOMContentLoaded", () => {
+      API.init();
+      loadCheckoutData();
+    });
+
+    function loadCheckoutData() {
+      const cart = API.getCart();
+      const user = API.getCurrentUser() || { name: "Aditya Verma", id: "STU1024", phone: "9876543210", walletBalance: 350 };
+
+      // Pre-fill student info
+      document.getElementById("chk-name").value = user.name || "";
+      document.getElementById("chk-id").value = user.id || "";
+      document.getElementById("chk-phone").value = user.phone || "";
+
+      // Update wallet pill
+      document.getElementById("wallet-balance-pill").textContent = `Balance: ₹${Number(user.walletBalance || 0).toFixed(2)}`;
+
+      if (cart.length === 0) {
+        document.getElementById("empty-cart-warning").style.display = "block";
+        document.getElementById("checkout-form-container").style.display = "none";
+        return;
+      }
+
+      document.getElementById("empty-cart-warning").style.display = "none";
+      document.getElementById("checkout-form-container").style.display = "grid";
+
+      // Render checkout items
+      const itemsList = document.getElementById("checkout-items-list");
+      itemsList.innerHTML = cart.map(item => `
+        <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.6rem 0; border-bottom: 1px solid var(--border-color); font-size: 0.9rem;">
+          <div style="display: flex; align-items: center; gap: 0.6rem;">
+            <span class="diet-tag ${item.isVeg ? 'diet-veg' : 'diet-nonveg'}" style="font-size: 0.65rem; padding: 0.15rem 0.4rem;">
+              <i class="fa-solid fa-circle"></i>
+            </span>
+            <div>
+              <strong style="color: var(--text-primary); display: block;">${item.name}</strong>
+              <span style="color: var(--text-muted); font-size: 0.8rem;">Qty: ${item.quantity} × ₹${item.price}</span>
+            </div>
+          </div>
+          <strong style="color: var(--text-primary);">₹${item.quantity * item.price}</strong>
+        </div>
+      `).join("");
+
+      // Automatically apply default promo coupon if present
+      applyCouponCode();
+    }
+
+    function selectPayment(method) {
+      currentPaymentMethod = method;
+      document.querySelectorAll(".payment-option-card").forEach(c => c.classList.remove("selected"));
+      if (method === "Campus Wallet") document.getElementById("opt-wallet").classList.add("selected");
+      if (method === "UPI QR Code") document.getElementById("opt-upi").classList.add("selected");
+      if (method === "Cash at Counter") document.getElementById("opt-cash").classList.add("selected");
+    }
+
+    async function applyCouponCode() {
+      const codeInput = document.getElementById("chk-coupon-code").value.trim().toUpperCase();
+      const msgEl = document.getElementById("coupon-message");
+      const cart = API.getCart();
+      const subtotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+
+      if (!codeInput) {
+        activeCoupon = null;
+        orderDiscount = 0;
+        msgEl.textContent = "";
+        calculateTotals();
+        return;
+      }
+
+      const res = await API.validateCoupon(codeInput, subtotal);
+      if (res.valid) {
+        activeCoupon = res.coupon;
+        orderDiscount = res.discount;
+        msgEl.textContent = `✓ ${res.message}`;
+        msgEl.style.color = "var(--accent-emerald)";
+      } else {
+        activeCoupon = null;
+        orderDiscount = 0;
+        msgEl.textContent = res.message;
+        msgEl.style.color = "var(--accent-ruby)";
+      }
+
+      calculateTotals();
+    }
+
+    function calculateTotals() {
+      const cart = API.getCart();
+      const count = cart.reduce((sum, item) => sum + item.quantity, 0);
+      const subtotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+
+      const discountRow = document.getElementById("row-discount");
+      if (orderDiscount > 0) {
+        discountRow.style.display = "flex";
+        document.getElementById("lbl-coupon-name").textContent = activeCoupon ? activeCoupon.code : "";
+        document.getElementById("summary-discount").textContent = `-₹${orderDiscount}`;
+      } else {
+        discountRow.style.display = "none";
+      }
+
+      const grandTotal = Math.max(0, subtotal - orderDiscount + packagingFee);
+
+      document.getElementById("summary-items-count").textContent = count;
+      document.getElementById("summary-subtotal").textContent = `₹${subtotal}`;
+      document.getElementById("summary-grand-total").textContent = `₹${grandTotal}`;
+      document.getElementById("upi-modal-amount").textContent = `₹${grandTotal}`;
+    }
+
+    async function submitOrder() {
+      const cart = API.getCart();
+      if (cart.length === 0) {
+        Utils.showToast("Your cart is empty!", "error");
+        return;
+      }
+
+      const name = document.getElementById("chk-name").value.trim();
+      const id = document.getElementById("chk-id").value.trim();
+      const phone = document.getElementById("chk-phone").value.trim();
+      const counter = document.getElementById("chk-counter").value;
+      const slot = document.getElementById("chk-slot").value;
+
+      if (!name || !id || !phone) {
+        Utils.showToast("Please fill in all student details", "warning");
+        return;
+      }
+
+      const subtotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+      const grandTotal = Math.max(0, subtotal - orderDiscount + packagingFee);
+
+      // If user selected Wallet, verify sufficient balance
+      if (currentPaymentMethod === "Campus Wallet") {
+        const user = API.getCurrentUser() || {};
+        if ((user.walletBalance || 0) < grandTotal) {
+          Utils.showToast(`Insufficient Wallet balance (₹${user.walletBalance || 0}). Please add funds or use UPI/Cash.`, "error", 4000);
+          return;
+        }
+      }
+
+      // If user selected UPI, trigger interactive QR simulation
+      if (currentPaymentMethod === "UPI QR Code") {
+        document.getElementById("upi-modal").style.display = "flex";
+        return;
+      }
+
+      await executeOrderCreation(name, id, phone, counter, slot, grandTotal, subtotal);
+    }
+
+    function closeUpiModal() {
+      document.getElementById("upi-modal").style.display = "none";
+    }
+
+    async function completeUpiPayment() {
+      closeUpiModal();
+      Utils.showToast("UPI Payment Verified! Generating your token...", "success", 2000);
+      const name = document.getElementById("chk-name").value.trim();
+      const id = document.getElementById("chk-id").value.trim();
+      const phone = document.getElementById("chk-phone").value.trim();
+      const counter = document.getElementById("chk-counter").value;
+      const slot = document.getElementById("chk-slot").value;
+      const cart = API.getCart();
+      const subtotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+      const grandTotal = Math.max(0, subtotal - orderDiscount + packagingFee);
+
+      await executeOrderCreation(name, id, phone, counter, slot, grandTotal, subtotal);
+    }
+
+    async function executeOrderCreation(name, id, phone, counter, slot, grandTotal, subtotal) {
+      const btn = document.getElementById("btn-place-order");
+      const text = document.getElementById("place-order-text");
+      const spin = document.getElementById("place-order-spinner");
+
+      btn.disabled = true;
+      text.style.display = "none";
+      spin.style.display = "inline-block";
+
+      const cart = API.getCart();
+      const orderPayload = {
+        studentName: name,
+        studentId: id,
+        phone: phone,
+        items: cart,
+        itemCount: cart.reduce((sum, i) => sum + i.quantity, 0),
+        subtotal: subtotal,
+        discount: orderDiscount,
+        couponCode: activeCoupon ? activeCoupon.code : null,
+        totalAmount: grandTotal,
+        pickupCounter: counter,
+        pickupSlot: slot,
+        paymentMethod: currentPaymentMethod,
+        estimatedPrepTime: "8-12 mins"
+      };
+
+      const res = await API.createOrder(orderPayload);
+
+      btn.disabled = false;
+      text.style.display = "inline-block";
+      spin.style.display = "none";
+
+      if (res.success) {
+        showConfirmationScreen(res.data);
+      } else {
+        Utils.showToast(res.message, "error", 4000);
+      }
+    }
+
+    function showConfirmationScreen(order) {
+      document.getElementById("checkout-main-content").style.display = "none";
+      const confView = document.getElementById("confirmation-view");
+      confView.style.display = "block";
+
+      confView.innerHTML = `
+        <div class="confirmation-card animate-fade-in">
+          <div style="width: 72px; height: 72px; background: rgba(16, 185, 129, 0.15); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem; color: var(--accent-emerald); font-size: 2.5rem;">
+            <i class="fa-solid fa-circle-check"></i>
+          </div>
+
+          <h2 style="font-size: 2rem; font-weight: 800; color: var(--text-primary); margin-bottom: 0.5rem;">Order Placed Successfully!</h2>
+          <p style="color: var(--text-secondary); font-size: 1rem;">Kitchen is actively preparing your fresh hot meal.</p>
+
+          <div class="token-display-box">
+            <span style="font-size: 0.85rem; text-transform: uppercase; font-weight: 700; color: var(--primary); letter-spacing: 0.05em; display: block; margin-bottom: 0.25rem;">
+              Your Live Pickup Token
+            </span>
+            <div style="font-size: 3.2rem; font-weight: 900; color: var(--text-primary); line-height: 1;">
+              ${order.tokenNumber}
+            </div>
+            <div style="font-size: 0.95rem; color: var(--text-secondary); margin-top: 0.75rem;">
+              Order ID: <strong style="color: var(--text-primary); font-family: monospace;">${order.orderId}</strong>
+            </div>
+          </div>
+
+          <div style="text-align: left; background: var(--bg-tertiary); padding: 1.25rem; border-radius: var(--radius-md); margin-bottom: 2rem; font-size: 0.92rem;">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+              <span style="color: var(--text-secondary);">Pickup Counter:</span>
+              <strong style="color: var(--text-primary);">${order.pickupCounter}</strong>
+            </div>
+            <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+              <span style="color: var(--text-secondary);">Time Slot:</span>
+              <strong style="color: var(--text-primary);">${order.pickupSlot}</strong>
+            </div>
+            <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+              <span style="color: var(--text-secondary);">Payment Method:</span>
+              <span class="badge badge-success">${order.paymentMethod}</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; border-top: 1px dashed var(--border-color); padding-top: 0.5rem; margin-top: 0.5rem;">
+              <span style="color: var(--text-secondary);">Total Paid:</span>
+              <strong style="color: var(--primary); font-size: 1.1rem;">₹${order.totalAmount}</strong>
+            </div>
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+            <a href="tracking.html?orderId=${order.orderId}" class="btn btn-primary btn-lg">
+              <i class="fa-solid fa-satellite-dish"></i> Track Live Cooking Progress
+            </a>
+            <a href="orders.html" class="btn btn-secondary">
+              <i class="fa-solid fa-receipt"></i> View Order History
+            </a>
+          </div>
+        </div>
+      `;
+    }
+  </script>
+</body>
+</html>

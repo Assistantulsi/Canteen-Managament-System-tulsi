@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Help & Contact — CampusBite Canteen</title>
+  <meta name="description" content="Reach the college canteen management desk for inquiries, dietary suggestions, event catering, or feedback.">
+
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <!-- Core Stylesheets -->
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/responsive.css">
+
+  <style>
+    .contact-grid {
+      display: grid;
+      grid-template-columns: 1.1fr 1fr;
+      gap: 2.5rem;
+      align-items: start;
+    }
+
+    .contact-info-card {
+      background: var(--bg-surface);
+      border-radius: var(--radius-xl);
+      border: 1px solid var(--border-color);
+      padding: 2rem;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .info-item-row {
+      display: flex;
+      gap: 1.25rem;
+      align-items: flex-start;
+      margin-bottom: 1.75rem;
+    }
+
+    .info-icon-box {
+      width: 46px;
+      height: 46px;
+      border-radius: var(--radius-md);
+      background: rgba(245, 158, 11, 0.15);
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.25rem;
+      flex-shrink: 0;
+    }
+
+    .map-placeholder {
+      width: 100%;
+      height: 280px;
+      border-radius: var(--radius-lg);
+      background: linear-gradient(135deg, #1e293b, #0f172a);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: #ffffff;
+      text-align: center;
+      border: 1px solid var(--border-color);
+      box-shadow: inset 0 0 40px rgba(0, 0, 0, 0.4);
+    }
+
+    .map-pin-pulse {
+      width: 54px;
+      height: 54px;
+      background: rgba(245, 158, 11, 0.25);
+      border: 2px solid var(--primary);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.6rem;
+      color: var(--primary);
+      margin-bottom: 1rem;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.7); }
+      70% { transform: scale(1.05); box-shadow: 0 0 0 15px rgba(245, 158, 11, 0); }
+      100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(245, 158, 11, 0); }
+    }
+
+    @media (max-width: 900px) {
+      .contact-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="site-header">
+    <div class="container">
+      <nav class="navbar">
+        <a href="../index.html" class="brand-logo">
+          <div class="logo-icon-wrapper"><i class="fa-solid fa-utensils"></i></div>
+          <div class="brand-name">
+            <span class="brand-title">CampusBite</span>
+            <span class="brand-tagline">College Canteen</span>
+          </div>
+        </a>
+
+        <ul class="nav-links">
+          <li><a href="../index.html" class="nav-link"><i class="fa-solid fa-house"></i> Home</a></li>
+          <li><a href="menu.html" class="nav-link"><i class="fa-solid fa-burger"></i> Menu</a></li>
+          <li><a href="orders.html" class="nav-link"><i class="fa-solid fa-receipt"></i> Orders</a></li>
+          <li><a href="tracking.html" class="nav-link"><i class="fa-solid fa-satellite-dish"></i> Live Track</a></li>
+          <li><a href="about.html" class="nav-link"><i class="fa-solid fa-circle-info"></i> About</a></li>
+          <li><a href="contact.html" class="nav-link active"><i class="fa-solid fa-envelope"></i> Contact</a></li>
+        </ul>
+
+        <div class="nav-actions">
+          <button class="nav-action-btn theme-toggle-btn" title="Toggle Dark/Light Mode" aria-label="Toggle Theme">
+            <i class="fa-solid fa-moon"></i>
+          </button>
+
+          <a href="cart.html" class="nav-action-btn" title="View Cart" aria-label="Shopping Cart">
+            <i class="fa-solid fa-cart-shopping"></i>
+            <span class="badge-counter cart-count-badge" style="display: none;">0</span>
+          </a>
+
+          <div class="nav-user-container"></div>
+
+          <button class="hamburger-btn" aria-label="Open Navigation Menu">
+            <i class="fa-solid fa-bars"></i>
+          </button>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Mobile Drawer -->
+  <div class="drawer-backdrop"></div>
+  <aside class="mobile-drawer" aria-label="Mobile Navigation">
+    <div class="drawer-header">
+      <div class="brand-logo">
+        <div class="logo-icon-wrapper"><i class="fa-solid fa-utensils"></i></div>
+        <span class="brand-title">CampusBite</span>
+      </div>
+      <button class="drawer-close-btn" aria-label="Close Menu">&times;</button>
+    </div>
+    <div class="drawer-body">
+      <ul class="drawer-links">
+        <li><a href="../index.html" class="drawer-link"><i class="fa-solid fa-house"></i> Home</a></li>
+        <li><a href="menu.html" class="drawer-link"><i class="fa-solid fa-burger"></i> Digital Menu</a></li>
+        <li><a href="cart.html" class="drawer-link"><i class="fa-solid fa-cart-shopping"></i> My Cart</a></li>
+        <li><a href="orders.html" class="drawer-link"><i class="fa-solid fa-receipt"></i> Order History</a></li>
+        <li><a href="tracking.html" class="drawer-link"><i class="fa-solid fa-satellite-dish"></i> Live Tracking</a></li>
+        <li><a href="wallet.html" class="drawer-link"><i class="fa-solid fa-wallet"></i> Campus Wallet</a></li>
+        <li><a href="favorites.html" class="drawer-link"><i class="fa-solid fa-heart"></i> Favorites</a></li>
+        <li><a href="profile.html" class="drawer-link"><i class="fa-solid fa-user"></i> My Profile</a></li>
+        <li><a href="about.html" class="drawer-link"><i class="fa-solid fa-circle-info"></i> About Canteen</a></li>
+        <li><a href="contact.html" class="drawer-link active"><i class="fa-solid fa-envelope"></i> Help & Contact</a></li>
+        <li><a href="../admin-login.html" class="drawer-link text-primary"><i class="fa-solid fa-user-shield"></i> Staff Portal</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <!-- Page Banner -->
+  <section class="page-banner" style="padding: 2.25rem 0 1.5rem; background: var(--bg-surface); border-bottom: 1px solid var(--border-color);">
+    <div class="container">
+      <span class="badge badge-primary" style="margin-bottom: 0.5rem;"><i class="fa-solid fa-headset"></i> Student Assistance Desk</span>
+      <h1 style="font-size: 2.1rem; font-weight: 800; color: var(--text-primary); margin: 0.25rem 0;">Help & Contact Desk</h1>
+      <p style="color: var(--text-secondary); margin: 0;">Have a suggestion, catering query, or order question? We are here to help.</p>
+    </div>
+  </section>
+
+  <!-- Contact Form & Info Grid -->
+  <main class="container" style="padding-top: 2.5rem; padding-bottom: 5rem;">
+    <div class="contact-grid">
+      <!-- Left: Contact Form -->
+      <div class="card" style="padding: 2.25rem;">
+        <h2 style="font-size: 1.35rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.5rem;">
+          <i class="fa-solid fa-paper-plane text-primary"></i> Send a Message
+        </h2>
+        <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 1.75rem;">
+          Our canteen supervision committee reviews all student suggestions daily.
+        </p>
+
+        <form id="contact-form">
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+            <div class="form-group">
+              <label class="form-label">Your Name</label>
+              <input type="text" id="contact-name" class="form-control" placeholder="e.g. Priya Sharma" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">College Email</label>
+              <input type="email" id="contact-email" class="form-control" placeholder="name@college.edu" required>
+            </div>
+          </div>
+
+          <div class="form-group" style="margin-bottom: 1rem;">
+            <label class="form-label">Subject</label>
+            <input type="text" id="contact-subject" class="form-control" placeholder="e.g. Menu suggestion or Club Event Catering" required>
+          </div>
+
+          <div class="form-group" style="margin-bottom: 1.5rem;">
+            <label class="form-label">Your Message or Feedback</label>
+            <textarea id="contact-message" class="form-control" rows="5" placeholder="Share your suggestions, diet recommendations, or inquiries..." required></textarea>
+          </div>
+
+          <button type="submit" class="btn btn-primary btn-block btn-lg" id="btn-send-message">
+            <span id="send-btn-text"><i class="fa-solid fa-paper-plane"></i> Send Feedback Message</span>
+            <i class="fa-solid fa-circle-notch fa-spin" id="send-btn-spinner" style="display: none;"></i>
+          </button>
+        </form>
+      </div>
+
+      <!-- Right: Contact Information & Map Placeholder -->
+      <div>
+        <div class="contact-info-card" style="margin-bottom: 2rem;">
+          <h2 style="font-size: 1.35rem; font-weight: 700; color: var(--text-primary); margin-bottom: 1.5rem;">
+            <i class="fa-solid fa-building-circle-check text-primary"></i> Canteen Helpdesk Details
+          </h2>
+
+          <div class="info-item-row">
+            <div class="info-icon-box"><i class="fa-solid fa-location-dot"></i></div>
+            <div>
+              <strong style="color: var(--text-primary); font-size: 0.95rem; display: block;">Central Campus Location</strong>
+              <p style="color: var(--text-secondary); font-size: 0.88rem; margin: 0.25rem 0 0; line-height: 1.4;">
+                Student Activity Center (SAC), Ground Floor, Central Wing, Engineering Campus.
+              </p>
+            </div>
+          </div>
+
+          <div class="info-item-row">
+            <div class="info-icon-box"><i class="fa-solid fa-phone"></i></div>
+            <div>
+              <strong style="color: var(--text-primary); font-size: 0.95rem; display: block;">Helpline & Intercom</strong>
+              <p style="color: var(--text-secondary); font-size: 0.88rem; margin: 0.25rem 0 0; line-height: 1.4;">
+                Hotline: +91 (020) 2590-8421<br>Internal Campus Intercom: Ext. 8421 / 8422
+              </p>
+            </div>
+          </div>
+
+          <div class="info-item-row">
+            <div class="info-icon-box"><i class="fa-solid fa-envelope"></i></div>
+            <div>
+              <strong style="color: var(--text-primary); font-size: 0.95rem; display: block;">Official Email</strong>
+              <p style="color: var(--text-secondary); font-size: 0.88rem; margin: 0.25rem 0 0;">
+                canteen@college.edu • foodcommittee@college.edu
+              </p>
+            </div>
+          </div>
+
+          <div class="info-item-row" style="margin-bottom: 0;">
+            <div class="info-icon-box"><i class="fa-solid fa-clock"></i></div>
+            <div>
+              <strong style="color: var(--text-primary); font-size: 0.95rem; display: block;">Kitchen Hours</strong>
+              <p style="color: var(--text-secondary); font-size: 0.88rem; margin: 0.25rem 0 0;">
+                Mon – Fri: 8:00 AM – 6:00 PM | Sat: 8:00 AM – 3:00 PM
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Interactive Map Placeholder -->
+        <div class="map-placeholder">
+          <div class="map-pin-pulse">
+            <i class="fa-solid fa-utensils"></i>
+          </div>
+          <strong style="font-size: 1.15rem; margin-bottom: 0.25rem;">Campus Canteen & Dining Hall</strong>
+          <span style="font-size: 0.85rem; color: #94a3b8; margin-bottom: 1rem;">SAC Building • Ground Floor</span>
+          <button class="btn btn-secondary btn-sm" onclick="Utils.showToast('Google Maps coordinates: 18.5204° N, 73.8567° E (Central Campus Plaza)', 'info', 3500)" style="background: rgba(255,255,255,0.15); border-color: rgba(255,255,255,0.25); color: #ffffff;">
+            <i class="fa-solid fa-map-location-dot"></i> View Coordinates
+          </button>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Mobile Bottom Navigation Bar -->
+  <nav class="mobile-bottom-bar" aria-label="Quick Mobile Navigation">
+    <a href="../index.html" class="bottom-bar-item">
+      <i class="fa-solid fa-house"></i>
+      <span>Home</span>
+    </a>
+    <a href="menu.html" class="bottom-bar-item">
+      <i class="fa-solid fa-burger"></i>
+      <span>Menu</span>
+    </a>
+    <a href="cart.html" class="bottom-bar-item">
+      <i class="fa-solid fa-cart-shopping"></i>
+      <span>Cart</span>
+      <span class="bottom-badge cart-count-badge" style="display: none;">0</span>
+    </a>
+    <a href="orders.html" class="bottom-bar-item">
+      <i class="fa-solid fa-receipt"></i>
+      <span>Orders</span>
+    </a>
+    <a href="dashboard.html" class="bottom-bar-item">
+      <i class="fa-solid fa-user"></i>
+      <span>Account</span>
+    </a>
+  </nav>
+
+  <!-- Scripts -->
+  <script src="../js/data.js"></script>
+  <script src="../js/utils.js"></script>
+  <script src="../js/api.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/main.js"></script>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      API.init();
+
+      // Pre-fill user data if logged in
+      const user = API.getCurrentUser();
+      if (user) {
+        if (user.name) document.getElementById("contact-name").value = user.name;
+        if (user.email) document.getElementById("contact-email").value = user.email;
+      }
+
+      document.getElementById("contact-form").addEventListener("submit", (e) => {
+        e.preventDefault();
+        const btn = document.getElementById("btn-send-message");
+        const text = document.getElementById("send-btn-text");
+        const spin = document.getElementById("send-btn-spinner");
+
+        btn.disabled = true;
+        text.style.display = "none";
+        spin.style.display = "inline-block";
+
+        setTimeout(() => {
+          btn.disabled = false;
+          text.style.display = "inline-block";
+          spin.style.display = "none";
+
+          Utils.showToast("Thank you! Your feedback has been submitted to the Canteen Committee. ✓", "success", 4000);
+          document.getElementById("contact-subject").value = "";
+          document.getElementById("contact-message").value = "";
+        }, 600);
+      });
+    });
+  </script>
+</body>
+</html>

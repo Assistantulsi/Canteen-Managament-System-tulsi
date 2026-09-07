@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Payment Transactions & Ledger — CampusBite Admin</title>
+  <meta name="description" content="View financial ledgers, UPI collections, student wallet debits, cash counter receipts, and process refunds.">
+
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <!-- Core Stylesheets -->
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/admin.css">
+  <link rel="stylesheet" href="../css/responsive.css">
+</head>
+<body class="admin-body">
+
+  <!-- Admin Sidebar -->
+  <aside class="admin-sidebar">
+    <div class="admin-sidebar-header">
+      <div class="logo-icon-wrapper" style="background: var(--primary); color: #ffffff; width: 36px; height: 36px; font-size: 1rem;"><i class="fa-solid fa-utensils"></i></div>
+      <div>
+        <div style="font-weight: 800; font-size: 1.05rem; color: var(--text-primary); line-height: 1.2;">CampusBite</div>
+        <span class="admin-badge-role">Staff Admin</span>
+      </div>
+    </div>
+
+    <nav class="admin-nav">
+      <a href="dashboard.html" class="admin-nav-item"><i class="fa-solid fa-chart-pie"></i> Dashboard</a>
+      <a href="orders.html" class="admin-nav-item"><i class="fa-solid fa-bell-concierge"></i> Orders</a>
+      <a href="menu-management.html" class="admin-nav-item"><i class="fa-solid fa-burger"></i> Menu Management</a>
+      <a href="inventory.html" class="admin-nav-item"><i class="fa-solid fa-boxes-stacked"></i> Inventory Stocks</a>
+      <a href="customers.html" class="admin-nav-item"><i class="fa-solid fa-users"></i> Students Ledger</a>
+      <a href="payments.html" class="admin-nav-item active"><i class="fa-solid fa-credit-card"></i> Payments & UPI</a>
+      <a href="offers.html" class="admin-nav-item"><i class="fa-solid fa-ticket"></i> Offers & Coupons</a>
+      <a href="feedback.html" class="admin-nav-item"><i class="fa-solid fa-star-half-stroke"></i> Ratings & Reviews</a>
+      <a href="reports.html" class="admin-nav-item"><i class="fa-solid fa-file-invoice-dollar"></i> Sales Reports</a>
+      <a href="../index.html" class="admin-nav-item" target="_blank"><i class="fa-solid fa-arrow-up-right-from-square"></i> Student View</a>
+    </nav>
+
+    <div class="admin-sidebar-footer">
+      <div class="admin-profile-pill">
+        <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=80&q=80" alt="Admin" class="admin-avatar">
+        <div style="flex: 1; min-width: 0;">
+          <strong style="font-size: 0.85rem; color: var(--text-primary); display: block;">Dr. V. Sharma</strong>
+          <span style="font-size: 0.72rem; color: var(--text-muted);">Chief Supervisor</span>
+        </div>
+        <button onclick="Auth.logoutAdmin()" style="background: none; border: none; color: var(--accent-ruby); cursor: pointer;" title="Logout">
+          <i class="fa-solid fa-right-from-bracket"></i>
+        </button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Admin Main Viewport -->
+  <main class="admin-main">
+    <header class="admin-topbar">
+      <div class="admin-breadcrumb">
+        <a href="dashboard.html" style="color: var(--text-muted);">Dashboard</a>
+        <i class="fa-solid fa-chevron-right" style="font-size: 0.7rem;"></i>
+        <strong>Payment Gateway & Ledger</strong>
+      </div>
+
+      <div class="admin-topbar-actions">
+        <button class="nav-action-btn theme-toggle-btn" title="Toggle Dark/Light Mode">
+          <i class="fa-solid fa-moon"></i>
+        </button>
+      </div>
+    </header>
+
+    <div class="admin-content">
+      <!-- Title -->
+      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+        <div>
+          <h1 style="font-size: 1.85rem; font-weight: 800; color: var(--text-primary); margin: 0 0 0.25rem;">Payment Transactions Ledger</h1>
+          <p style="color: var(--text-secondary); margin: 0; font-size: 0.95rem;">Monitor student transactions across Campus Wallet, UPI QR Codes, and Physical Counter Cash.</p>
+        </div>
+      </div>
+
+      <!-- Financial Metrics Grid -->
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem;">
+        <div class="card" style="padding: 1.25rem;">
+          <span style="font-size: 0.8rem; color: var(--text-muted); font-weight: 600;">TOTAL REVENUE RECORDED</span>
+          <strong style="font-size: 1.6rem; color: var(--accent-emerald); display: block;" id="pay-total-vol">₹0</strong>
+        </div>
+        <div class="card" style="padding: 1.25rem;">
+          <span style="font-size: 0.8rem; color: var(--text-muted); font-weight: 600;">WALLET TRANSACTIONS</span>
+          <strong style="font-size: 1.6rem; color: var(--primary); display: block;" id="pay-wallet-vol">₹0</strong>
+        </div>
+        <div class="card" style="padding: 1.25rem;">
+          <span style="font-size: 0.8rem; color: var(--text-muted); font-weight: 600;">UPI SETTLEMENTS</span>
+          <strong style="font-size: 1.6rem; color: #6366f1; display: block;" id="pay-upi-vol">₹0</strong>
+        </div>
+        <div class="card" style="padding: 1.25rem;">
+          <span style="font-size: 0.8rem; color: var(--text-muted); font-weight: 600;">CASH AT COUNTER</span>
+          <strong style="font-size: 1.6rem; color: var(--text-primary); display: block;" id="pay-cash-vol">₹0</strong>
+        </div>
+      </div>
+
+      <!-- Search & Filters Toolbar -->
+      <div class="card" style="padding: 1.25rem;">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+          <div class="input-icon-wrapper" style="max-width: 320px; width: 100%;">
+            <i class="fa-solid fa-magnifying-glass input-icon"></i>
+            <input type="text" id="pay-search" class="form-control" placeholder="Search Order ID, Txn ID, or student..." oninput="filterPayments()">
+          </div>
+
+          <div style="display: flex; gap: 0.5rem;">
+            <select id="pay-method-filter" class="form-control" style="width: auto;" onchange="filterPayments()">
+              <option value="All">All Payment Methods</option>
+              <option value="Campus Wallet">Campus Wallet</option>
+              <option value="UPI QR Code">UPI QR Code</option>
+              <option value="Cash at Counter">Cash at Counter</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Transactions Table -->
+      <div class="card" style="padding: 0; overflow: hidden;">
+        <div style="overflow-x: auto;">
+          <table class="table" style="width: 100%; margin: 0;">
+            <thead>
+              <tr>
+                <th style="padding: 1rem 1.25rem;">Transaction Ref</th>
+                <th>Order Reference</th>
+                <th>Student</th>
+                <th>Amount</th>
+                <th>Payment Mode</th>
+                <th>Timestamp</th>
+                <th>Status</th>
+                <th style="text-align: right; padding-right: 1.25rem;">Action</th>
+              </tr>
+            </thead>
+            <tbody id="payments-table-body">
+              <!-- Injected via JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Scripts -->
+  <script src="../js/data.js"></script>
+  <script src="../js/utils.js"></script>
+  <script src="../js/api.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/main.js"></script>
+
+  <script>
+    let ordersList = [];
+
+    document.addEventListener("DOMContentLoaded", async () => {
+      API.init();
+      if (!Auth.requireAdminAuth("../admin-login.html")) return;
+      loadPayments();
+    });
+
+    async function loadPayments() {
+      const res = await API.getOrders();
+      if (res.success) {
+        ordersList = res.data;
+        updateFinancialMetrics();
+        filterPayments();
+      }
+    }
+
+    function updateFinancialMetrics() {
+      const total = ordersList.reduce((sum, o) => sum + (Number(o.totalAmount) || 0), 0);
+      const wallet = ordersList.filter(o => o.paymentMethod === "Campus Wallet").reduce((sum, o) => sum + (Number(o.totalAmount) || 0), 0);
+      const upi = ordersList.filter(o => o.paymentMethod === "UPI QR Code").reduce((sum, o) => sum + (Number(o.totalAmount) || 0), 0);
+      const cash = ordersList.filter(o => o.paymentMethod === "Cash at Counter").reduce((sum, o) => sum + (Number(o.totalAmount) || 0), 0);
+
+      document.getElementById("pay-total-vol").textContent = `₹${total.toLocaleString("en-IN")}`;
+      document.getElementById("pay-wallet-vol").textContent = `₹${wallet.toLocaleString("en-IN")}`;
+      document.getElementById("pay-upi-vol").textContent = `₹${upi.toLocaleString("en-IN")}`;
+      document.getElementById("pay-cash-vol").textContent = `₹${cash.toLocaleString("en-IN")}`;
+    }
+
+    function filterPayments() {
+      const q = document.getElementById("pay-search").value.toLowerCase().trim();
+      const method = document.getElementById("pay-method-filter").value;
+
+      const filtered = ordersList.filter(o => {
+        if (method !== "All" && o.paymentMethod !== method) return false;
+        if (q) {
+          const matchOrder = (o.orderId || "").toLowerCase().includes(q);
+          const matchStudent = (o.studentName || "").toLowerCase().includes(q);
+          const matchId = (o.studentId || "").toLowerCase().includes(q);
+          if (!matchOrder && !matchStudent && !matchId) return false;
+        }
+        return true;
+      });
+
+      renderPayments(filtered);
+    }
+
+    function renderPayments(orders) {
+      const tbody = document.getElementById("payments-table-body");
+      if (orders.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="8" style="text-align: center; padding: 2rem; color: var(--text-muted);">No payment records found.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = orders.map(o => {
+        const txnId = `TXN_${(o.orderId || '000').slice(-6)}`;
+        const status = o.paymentStatus || "Successful";
+        const isRefunded = status === "Refunded";
+
+        return `
+          <tr style="border-bottom: 1px solid var(--border-color);">
+            <td style="padding: 0.85rem 1.25rem;">
+              <strong style="font-family: monospace; color: var(--text-primary);">${txnId}</strong>
+            </td>
+            <td>
+              <span style="font-family: monospace; color: var(--primary); font-weight: 600;">${o.orderId}</span>
+            </td>
+            <td>
+              <strong style="color: var(--text-primary); display: block; font-size: 0.9rem;">${o.studentName || 'Student'}</strong>
+              <span style="color: var(--text-muted); font-size: 0.78rem;">${o.studentId || ''}</span>
+            </td>
+            <td>
+              <strong style="font-size: 1.05rem; color: ${isRefunded ? 'var(--accent-ruby)' : 'var(--accent-emerald)'};">
+                ₹${o.totalAmount}
+              </strong>
+            </td>
+            <td>
+              <span class="badge" style="background: var(--bg-tertiary);">${o.paymentMethod || 'Campus Wallet'}</span>
+            </td>
+            <td style="color: var(--text-muted); font-size: 0.82rem;">
+              ${Utils.formatDate(o.orderTime)}
+            </td>
+            <td>
+              <span class="badge ${isRefunded ? 'badge-danger' : 'badge-success'}">${status}</span>
+            </td>
+            <td style="text-align: right; padding-right: 1.25rem;">
+              ${!isRefunded ? `
+                <button class="btn btn-outline-danger btn-sm" onclick="handleRefund('${o.orderId}', ${o.totalAmount})">
+                  <i class="fa-solid fa-rotate-left"></i> Refund
+                </button>
+              ` : `
+                <span style="font-size: 0.75rem; color: var(--text-muted); font-weight: 600;">Processed</span>
+              `}
+            </td>
+          </tr>
+        `;
+      }).join("");
+    }
+
+    async function handleRefund(orderId, amount) {
+      if (!confirm(`Are you sure you want to refund ₹${amount} for Order ${orderId}? This will credit the student's wallet.`)) return;
+
+      const orders = Utils.getStorage(STORAGE_KEYS.ORDERS, []);
+      const order = orders.find(o => o.orderId === orderId);
+      if (order) {
+        order.paymentStatus = "Refunded";
+        order.orderStatus = "Cancelled";
+        Utils.setStorage(STORAGE_KEYS.ORDERS, orders);
+
+        // Credit to wallet
+        await API.addWalletBalance(amount);
+
+        Utils.showToast(`Refund of ₹${amount} processed successfully for ${orderId} ✓`, "info", 3000);
+        loadPayments();
+      }
+    }
+  </script>
+</body>
+</html>

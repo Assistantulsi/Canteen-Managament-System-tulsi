@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Canteen Admin Portal — CampusBite Executive</title>
+  <meta name="description" content="Secure administrative login for college canteen staff, kitchen managers, and inventory supervisors.">
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/responsive.css">
+  <link rel="stylesheet" href="css/admin.css">
+
+  <style>
+    .admin-auth-wrapper {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: radial-gradient(circle at top right, #1e1b4b 0%, #0f172a 50%, #020617 100%);
+      padding: 2rem 1.5rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .admin-auth-wrapper::before {
+      content: '';
+      position: absolute;
+      top: -150px;
+      left: -150px;
+      width: 450px;
+      height: 450px;
+      background: radial-gradient(circle, rgba(16, 185, 129, 0.15) 0%, transparent 70%);
+      border-radius: 50%;
+    }
+
+    .admin-auth-wrapper::after {
+      content: '';
+      position: absolute;
+      bottom: -150px;
+      right: -150px;
+      width: 450px;
+      height: 450px;
+      background: radial-gradient(circle, rgba(99, 102, 241, 0.15) 0%, transparent 70%);
+      border-radius: 50%;
+    }
+
+    .admin-card {
+      width: 100%;
+      max-width: 480px;
+      background: rgba(15, 23, 42, 0.85);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: var(--radius-xl);
+      padding: 3rem 2.5rem;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
+      position: relative;
+      z-index: 2;
+    }
+
+    .admin-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: rgba(16, 185, 129, 0.15);
+      color: #34d399;
+      border: 1px solid rgba(52, 211, 153, 0.3);
+      padding: 0.35rem 0.85rem;
+      border-radius: var(--radius-full);
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      margin-bottom: 1.25rem;
+    }
+
+    .demo-creds-box {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px dashed rgba(255, 255, 255, 0.18);
+      border-radius: var(--radius-md);
+      padding: 1rem;
+      margin-top: 1.75rem;
+      font-size: 0.85rem;
+    }
+
+    .demo-creds-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.5rem;
+      color: #94a3b8;
+      font-weight: 600;
+    }
+
+    .btn-autofill {
+      background: rgba(255, 255, 255, 0.1);
+      border: none;
+      color: #38bdf8;
+      font-size: 0.78rem;
+      padding: 0.25rem 0.6rem;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      font-weight: 600;
+      transition: background 0.2s;
+    }
+
+    .btn-autofill:hover {
+      background: rgba(56, 189, 248, 0.2);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="admin-auth-wrapper">
+    <div class="admin-card">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+        <a href="index.html" class="btn btn-secondary btn-sm" style="background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.1); color: #cbd5e1;">
+          <i class="fa-solid fa-arrow-left"></i> Student Site
+        </a>
+        <span style="font-size: 0.78rem; color: #64748b;"><i class="fa-solid fa-lock"></i> SSL Secured</span>
+      </div>
+
+      <div style="text-align: center; margin-bottom: 2rem;">
+        <div style="width: 58px; height: 58px; background: linear-gradient(135deg, #10b981, #059669); border-radius: var(--radius-lg); display: flex; align-items: center; justify-content: center; margin: 0 auto 1.25rem; box-shadow: 0 10px 25px -5px rgba(16, 185, 129, 0.4);">
+          <i class="fa-solid fa-shield-halved" style="font-size: 1.75rem; color: #ffffff;"></i>
+        </div>
+        <span class="admin-badge"><i class="fa-solid fa-gear"></i> Staff Administration</span>
+        <h1 style="font-size: 1.85rem; font-weight: 800; color: #ffffff; margin-bottom: 0.5rem;">Canteen Command Center</h1>
+        <p style="color: #94a3b8; font-size: 0.9rem;">Sign in with authorized staff credentials to manage orders, menu & inventory.</p>
+      </div>
+
+      <form id="admin-login-form" novalidate>
+        <!-- Admin Identifier -->
+        <div class="form-group" id="group-admin-id">
+          <label class="form-label" for="admin-id" style="color: #cbd5e1;">Admin ID or Staff Email</label>
+          <div class="input-icon-wrapper">
+            <i class="fa-solid fa-user-shield input-icon" style="color: #64748b;"></i>
+            <input type="text" id="admin-id" class="form-control" placeholder="admin@canteen.edu or ADM8801" required style="background: rgba(0,0,0,0.3); border-color: rgba(255,255,255,0.15); color: #ffffff;">
+          </div>
+          <span class="error-text">Please enter your Admin Email or ID</span>
+        </div>
+
+        <!-- Password -->
+        <div class="form-group" id="group-admin-password" style="margin-top: 1.25rem;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+            <label class="form-label" for="admin-password" style="color: #cbd5e1; margin-bottom: 0;">Password</label>
+            <a href="javascript:void(0)" onclick="Utils.showToast('Demo mode: Default admin password is admin123', 'info', 4000)" style="font-size: 0.8rem; color: #38bdf8;">Forgot Password?</a>
+          </div>
+          <div class="input-icon-wrapper">
+            <i class="fa-solid fa-key input-icon" style="color: #64748b;"></i>
+            <input type="password" id="admin-password" class="form-control" placeholder="••••••••" required style="background: rgba(0,0,0,0.3); border-color: rgba(255,255,255,0.15); color: #ffffff;">
+            <button type="button" class="password-toggle" aria-label="Toggle Password" style="color: #94a3b8;">
+              <i class="fa-solid fa-eye"></i>
+            </button>
+          </div>
+          <span class="error-text">Please enter the admin password</span>
+        </div>
+
+        <!-- Remember Me Checkbox -->
+        <div class="form-group" style="margin-top: 1rem;">
+          <label class="checkbox-label" style="font-size: 0.85rem; color: #94a3b8; cursor: pointer;">
+            <input type="checkbox" id="admin-remember" checked>
+            <span>Remember terminal session on this device</span>
+          </label>
+        </div>
+
+        <!-- Submit Button -->
+        <button type="submit" class="btn btn-primary btn-block btn-lg" id="admin-submit-btn" style="margin-top: 1.5rem; background: linear-gradient(135deg, #10b981, #059669); border-color: #10b981;">
+          <span id="btn-text"><i class="fa-solid fa-right-to-bracket"></i> Authenticate & Enter Portal</span>
+          <i class="fa-solid fa-circle-notch fa-spin" id="btn-spinner" style="display: none;"></i>
+        </button>
+      </form>
+
+      <!-- Demo Credentials Helper -->
+      <div class="demo-creds-box">
+        <div class="demo-creds-header">
+          <span><i class="fa-solid fa-terminal"></i> Demo Staff Credentials</span>
+          <button class="btn-autofill" onclick="Auth.fillCredentials('admin@canteen.edu', 'admin123', '#admin-login-form')">
+            <i class="fa-solid fa-wand-magic-sparkles"></i> Auto-Fill
+          </button>
+        </div>
+        <div style="display: flex; justify-content: space-between; font-family: monospace; color: #cbd5e1;">
+          <span>User: <strong>admin@canteen.edu</strong></span>
+          <span>Pass: <strong>admin123</strong></span>
+        </div>
+      </div>
+
+      <div style="text-align: center; margin-top: 1.75rem; font-size: 0.85rem; color: #64748b;">
+        Looking for student meal ordering? 
+        <a href="login.html" style="color: var(--primary); font-weight: 600;">Student Login</a>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/data.js"></script>
+  <script src="js/utils.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/main.js"></script>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      API.init();
+      Auth.setupPasswordToggles();
+
+      const form = document.getElementById("admin-login-form");
+      const idInput = document.getElementById("admin-id");
+      const passwordInput = document.getElementById("admin-password");
+      const submitBtn = document.getElementById("admin-submit-btn");
+      const btnText = document.getElementById("btn-text");
+      const btnSpinner = document.getElementById("btn-spinner");
+
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        let isValid = true;
+        document.querySelectorAll(".form-group").forEach(g => g.classList.remove("has-error"));
+
+        if (!idInput.value.trim()) {
+          document.getElementById("group-admin-id").classList.add("has-error");
+          isValid = false;
+        }
+
+        if (!passwordInput.value.trim()) {
+          document.getElementById("group-admin-password").classList.add("has-error");
+          isValid = false;
+        }
+
+        if (!isValid) return;
+
+        submitBtn.disabled = true;
+        btnText.style.display = "none";
+        btnSpinner.style.display = "inline-block";
+
+        const res = await API.loginAdmin(idInput.value, passwordInput.value);
+
+        submitBtn.disabled = false;
+        btnText.style.display = "inline-block";
+        btnSpinner.style.display = "none";
+
+        if (res.success) {
+          Utils.showToast("Admin Authenticated! Opening Executive Dashboard...", "success", 2000);
+          setTimeout(() => {
+            window.location.href = "admin/dashboard.html";
+          }, 800);
+        } else {
+          Utils.showToast(res.message, "error", 3500);
+        }
+      });
+    });
+  </script>
+</body>
+</html>
